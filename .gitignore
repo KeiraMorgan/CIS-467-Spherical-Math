@@ -1,0 +1,44 @@
+.DS_Store
+node_modules
+/dist
+ts-out
+coverage
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript compiler output
+ts-out
+
+# Jest coverage output
+coverage/*
+
+screenshots/*
+
+*.js.map
+
+# LaTeX extra files
+*.synctex.gz
+*.aux
+*.dvi
+*.fls
+*.fdb_latexmk
+*.log
+latex-notes/*.pdf
+
+# Generated files
+docs/.vuepress/dist

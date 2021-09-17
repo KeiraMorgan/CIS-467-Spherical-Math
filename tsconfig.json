@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "declaration": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "ts-out",
+    "types": ["vuetify", "webpack", "webpack-env", "jest" /*"cypress" */],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/vuetify/types",
+      "@/types"
+    ],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "__tests__", "**/tests/unit/**"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/types/two.js/index.d.ts",
+    "tests/*.d.ts"
+  ],
+  "verbose": true
+  // "globals": {
+  //   "ts-jest": {
+  //     "diagnostics": false
+  //   }
+  // }
+}
