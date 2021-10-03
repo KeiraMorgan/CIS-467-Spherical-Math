@@ -13,9 +13,8 @@
       thumb-label></v-slider>
 
     <v-btn play="node.value"
-    color="gray"
     small
-    @click="$refs.slider.value = 1">
+    @click="play">
       <v-icon small>
       mdi-play
       </v-icon>
@@ -47,6 +46,11 @@ export default class SENoduleItem extends Vue {
       // console.debug("Clicked", this.node.name);
       this.$emit("object-select", { id: this.node.id });
     }
+  }
+
+  play(): void {
+    console.log("hello");
+    this.node.value = 0.5;
   }
 
 
