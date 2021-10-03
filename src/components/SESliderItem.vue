@@ -9,7 +9,25 @@
       :min="node.min"
       :max="node.max"
       :step="node.step"
+      ref="slider"
       thumb-label></v-slider>
+
+    <v-btn play="node.value"
+    color="gray"
+    small
+    @click="$refs.slider.value = 1">
+      <v-icon small>
+      mdi-play
+      </v-icon>
+    </v-btn>
+
+    <v-btn
+      small>
+      <v-icon>
+      mdi-stop-circle-outline
+      </v-icon>
+    </v-btn>
+
   </div>
 </template>
 
@@ -30,6 +48,8 @@ export default class SENoduleItem extends Vue {
       this.$emit("object-select", { id: this.node.id });
     }
   }
+
+
 
   // get isMeasurement(): boolean {
   //   return this.node instanceof SEMeasurement;
