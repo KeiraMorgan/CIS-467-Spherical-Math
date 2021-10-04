@@ -9,10 +9,9 @@
       :min="node.min"
       :max="node.max"
       :step="node.step"
-      ref="slider"
       thumb-label></v-slider>
 
-    <v-btn play="node.value"
+    <v-btn play
     small
     @click="play">
       <v-icon small>
@@ -20,15 +19,29 @@
       </v-icon>
     </v-btn>
 
-    <v-btn
-      small>
+    <v-btn stop
+      small
+      @click="stop">
       <v-icon>
       mdi-stop-circle-outline
       </v-icon>
     </v-btn>
 
+    <v-btn Select
+    small>
+    <v-select
+      hidden
+      small-chips
+      append-icon="mdi-menu"
+      :items="['Stop','Reflect','Loop']"
+      @change='playBackValueChanged'>      
+    </v-select>  
+    </v-btn>      
   </div>
 </template>
+
+ 
+
 
 <script lang="ts">
 import Vue from "vue";
@@ -48,11 +61,25 @@ export default class SENoduleItem extends Vue {
     }
   }
 
-  play(): void {
-    console.log("hello");
-    this.node.value = 0.5;
+ 
+  playBackValueChanged(playBackSelectEvent: string):void{
+    this.node.setPlayBackType(playBackSelectEvent);
   }
 
+
+  play(): void {
+    //this.node.canUpdateNow()
+    this.node.timer();
+    //this.node.setOutOfDate(true);
+    //console.log("A selection was made");
+
+  }
+
+  stop(): void {
+    this.node.timer();
+   //console.log("A selection was made");
+
+  }
 
 
   // get isMeasurement(): boolean {
