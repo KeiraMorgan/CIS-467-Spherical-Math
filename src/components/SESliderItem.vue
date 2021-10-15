@@ -10,8 +10,42 @@
       :max="node.max"
       :step="node.step"
       thumb-label></v-slider>
+
+    <v-btn play
+    small
+    @click="play">
+      <v-icon small>
+        mdi-play-pause     
+      </v-icon>
+    </v-btn>
+
+    <v-btn SelectPlayType
+    small>
+      <v-select
+        hidden
+        small-chips
+        append-icon="mdi-menu"
+        :items="['Stop','Reflect','Loop']"
+        @change='playBackValueChanged'
+        >   
+      </v-select>  
+    </v-btn> 
+    <v-btn SelectPlaySpeed
+    small>
+      <v-select
+        hidden
+        small-chips
+        append-icon="mdi-speedometer-slow"
+        :items="['Slow', 'Normal', 'Fast']"
+        @change="playBackSpeed">
+      </v-select>
+    </v-btn>
+        
   </div>
 </template>
+
+ 
+
 
 <script lang="ts">
 import Vue from "vue";
@@ -30,6 +64,20 @@ export default class SENoduleItem extends Vue {
       this.$emit("object-select", { id: this.node.id });
     }
   }
+ 
+  playBackValueChanged(playBackSelectEvent: string): void{
+    this.node.setPlayBackType(playBackSelectEvent);
+    
+  }
+
+  playBackSpeed(playBackSpeedEvent: string): void{
+    this.node.setPlayBackSpeed(playBackSpeedEvent);
+  }
+
+  play(): void {
+    this.node.timer();
+  }
+
 
   // get isMeasurement(): boolean {
   //   return this.node instanceof SEMeasurement;
