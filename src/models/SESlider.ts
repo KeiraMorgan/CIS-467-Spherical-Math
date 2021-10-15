@@ -16,7 +16,9 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
   private reflectFlag: boolean;
   private reflectDirection: boolean;
   private timerExists: boolean;
+  private playAgain: boolean;
   private timerID!: NodeJS.Timeout;
+  private playSpeed: number;
   constructor({
     min,
     max,
@@ -33,11 +35,13 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
     this.max = max;
     this.step = step;
     this.current = value;
-    this.playAndStopFlag = false;
+    this.playAndStopFlag = true;
     this.loopFlag = false;
     this.reflectFlag = false;
     this.reflectDirection = false;
     this.timerExists = false;
+    this.playAgain = false;
+    this.playSpeed = 1000;
 
 
     this.showing = true;
@@ -83,9 +87,36 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
     }
   }
 
+  //Sets the delay for setInterval in timer. If a timer already exists, 
+  //it is called once to remove it then again to start with the new delay.
+  public setPlayBackSpeed (speed: string): void {
+    if(speed == "Slow"){
+      this.playSpeed = 1250;
+    }
+    else if(speed == "Medium"){
+      this.playSpeed = 750;
+    }
+    else if(speed == "Fast"){
+      this.playSpeed = 250;
+    }
+    if(this.timerExists){
+      this.timer();
+      this.timer();
+    }
+  }
+
+  //If the slider reaches the max value, the timer is removed.
+  //The play again flag allows the slider to play from the beginning if it already reached the end.
   private playAndStop (): void {
+    if(this.playAgain){
+      this.value = this.min;
+      this.playAgain = false;
+    }
     if (this.value + this.step <= this.max){
       this.value = this.value + this.step;
+    } else {
+      this.timer();
+      this.playAgain = true;
     }
   }
 
@@ -107,7 +138,7 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
         this.value = this.value + this.step;
       }
     }
-    else {
+    if(this.reflectDirection) {
       if(this.value - this.step < this.min){
         this.reflectDirection = false;
       }
@@ -118,7 +149,7 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
   }
   public timer (): void {
     if (!this.timerExists){
-      this.timerID = setInterval(() => this.play(), 1000);
+      this.timerID = setInterval(() => this.play(), this.playSpeed);
       this.timerExists = true;
     }
     else{
@@ -139,6 +170,7 @@ export class SESlider extends SEExpression /*implements Visitable*/ {
     if(this.reflectFlag){
       this.reflect();
     }
+    this.update();
   }
 
   public customStyles = (): Set<string> => emptySet;

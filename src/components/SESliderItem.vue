@@ -15,28 +15,32 @@
     small
     @click="play">
       <v-icon small>
-      mdi-play
+        mdi-play-pause     
       </v-icon>
     </v-btn>
 
-    <v-btn stop
-      small
-      @click="stop">
-      <v-icon>
-      mdi-stop-circle-outline
-      </v-icon>
-    </v-btn>
-
-    <v-btn Select
+    <v-btn SelectPlayType
     small>
-    <v-select
-      hidden
-      small-chips
-      append-icon="mdi-menu"
-      :items="['Stop','Reflect','Loop']"
-      @change='playBackValueChanged'>      
-    </v-select>  
-    </v-btn>      
+      <v-select
+        hidden
+        small-chips
+        append-icon="mdi-menu"
+        :items="['Stop','Reflect','Loop']"
+        @change='playBackValueChanged'
+        >   
+      </v-select>  
+    </v-btn> 
+    <v-btn SelectPlaySpeed
+    small>
+      <v-select
+        hidden
+        small-chips
+        append-icon="mdi-speedometer-slow"
+        :items="['Slow', 'Normal', 'Fast']"
+        @change="playBackSpeed">
+      </v-select>
+    </v-btn>
+        
   </div>
 </template>
 
@@ -60,25 +64,18 @@ export default class SENoduleItem extends Vue {
       this.$emit("object-select", { id: this.node.id });
     }
   }
-
  
-  playBackValueChanged(playBackSelectEvent: string):void{
+  playBackValueChanged(playBackSelectEvent: string): void{
     this.node.setPlayBackType(playBackSelectEvent);
+    
   }
 
+  playBackSpeed(playBackSpeedEvent: string): void{
+    this.node.setPlayBackSpeed(playBackSpeedEvent);
+  }
 
   play(): void {
-    //this.node.canUpdateNow()
     this.node.timer();
-    //this.node.setOutOfDate(true);
-    //console.log("A selection was made");
-
-  }
-
-  stop(): void {
-    this.node.timer();
-   //console.log("A selection was made");
-
   }
 
 
