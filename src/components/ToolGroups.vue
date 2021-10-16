@@ -12,7 +12,7 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'edit'
+            b => b.toolGroup === 'edit' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -33,7 +33,7 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'display'
+            b => b.toolGroup === 'display' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -53,7 +53,7 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'basic'
+            b => b.toolGroup === 'basic' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -73,7 +73,7 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'construction'
+            b => b.toolGroup === 'construction' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -95,7 +95,7 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'measurement'
+            b => b.toolGroup === 'measurement' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -118,7 +118,7 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'advanced'
+            b => b.toolGroup === 'advanced' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -140,7 +140,7 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'transformation'
+            b => b.toolGroup === 'transformation' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -162,7 +162,7 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'conic'
+            b => b.toolGroup === 'conic' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
           :key="pos"
           :button="button"
@@ -181,8 +181,9 @@
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
         <ToolButton v-for="(button, pos) in buttonList.filter(
-            b => b.toolGroup === 'developerOnly'
+            b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
+
           :key="pos"
           :button="button"
           :elev="elev"
@@ -218,6 +219,7 @@ export default class ToolGroups extends Vue {
   /* Use the global settings to set the variables bound to the toolTipOpen/CloseDelay */
   private toolTipOpenDelay = SETTINGS.toolTip.openDelay;
   private toolTipCloseDelay = SETTINGS.toolTip.closeDelay;
+  private buttinDisplayList = SETTINGS.userButtonDisplayList;
 
   private elev = 24;
   private inProductionMode = false;
@@ -250,6 +252,7 @@ export default class ToolGroups extends Vue {
         btn.displayToolUseMessage = !btn.displayToolUseMessage;
       });
   }
+
   /* A list of all the buttons that are possible to display/use. Only those that the User has
   permission to use will be available. */
   private buttonList: ToolButtonType[] = [
