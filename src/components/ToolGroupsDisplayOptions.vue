@@ -1,8 +1,7 @@
 <template>
   <div class="pa-1 accent"
     id="toolButtonContainer">
-    <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
+   
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
@@ -21,8 +20,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- The Display Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
     <div id="DisplayToolGroup"
       v-show="nonEmptyGroup('display')">
       <h3 class="body-1 font-weight-bold">
@@ -42,8 +39,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- The Basic Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
     <div id="BasicToolGroup"
       v-show="nonEmptyGroup('basic')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
@@ -61,8 +56,7 @@
         </ToolButton>
       </v-btn-toggle>
     </div>
-    <!-- The Construction Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
+   
     <div id="ConstructionToolGroup"
       v-show="nonEmptyGroup('construction')">
       <h3 class="body-1 font-weight-bold">
@@ -82,10 +76,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Measurement Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="MeasurementToolGroup"
       v-show="nonEmptyGroup('measurement')">
       <h3 class="body-1 font-weight-bold">
@@ -104,10 +94,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Advanced Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="AdvanceToolGroup"
       v-show="nonEmptyGroup('advanced')">
       <h3 class="body-1 font-weight-bold">
@@ -127,10 +113,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Transformational Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="TransformationalToolGroup"
       v-show="nonEmptyGroup('transformational')">
       <h3 class="body-1 font-weight-bold">
@@ -149,10 +131,6 @@
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Conice Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="ConicToolGroup"
       v-show="nonEmptyGroup('conic')">
       <h3 class="body-1 font-weight-bold">
