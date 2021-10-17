@@ -239,7 +239,8 @@ export default class ToolGroups extends Vue {
 
   /* This returns true only if there is at least one tool that needs to be displayed in the group. */
   nonEmptyGroup(groupName: string): boolean {
-    return this.buttonList.filter(b => b.toolGroup === groupName).length > 0;
+    return this.buttonList.filter(b => b.toolGroup === groupName).length
+       - this.buttonList.filter(b => this.buttinDisplayList.includes(b.displayedName) && b.toolGroup === groupName).length > 0;
   }
 
   /* This turns off all other snackbar/toolUseMessage displays so that multiple 
