@@ -11,10 +11,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'edit' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -32,10 +32,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'display' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -52,10 +52,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'basic' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -72,10 +72,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'construction' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -94,10 +94,10 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'measurement' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -117,10 +117,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'advanced' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -139,10 +139,10 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'transformation' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -161,10 +161,10 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'conic' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-          :key="pos"
+          :key="button.id"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -180,11 +180,11 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
-        <ToolButton v-for="(button, pos) in buttonList.filter(
+        <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
 
-          :key="pos"
+          :key="button.id"
           :button="button"
           :elev="elev"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
@@ -194,6 +194,7 @@
 
   </div>
 </template>
+
 
 <script lang="ts">
 import Vue from "vue";
