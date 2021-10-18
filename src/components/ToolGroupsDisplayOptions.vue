@@ -18,9 +18,7 @@
         </ToolButton>
       </v-btn-toggle>
     </div>
-
-    <!-- The Display Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
+    
     <div id="DisplayToolGroup"
       v-show="nonEmptyGroup('display')">
       <h3 class="body-1 font-weight-bold">
