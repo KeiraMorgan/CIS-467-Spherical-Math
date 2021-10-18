@@ -1,7 +1,7 @@
 <template>
   <div class="pa-1 accent"
     id="toolButtonContainer">
-  
+<!-- test   -->
     <div id="BasicToolGroup"
       v-show="nonEmptyGroup('basic')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
