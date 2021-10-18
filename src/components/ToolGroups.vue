@@ -195,6 +195,7 @@
   </div>
 </template>
 
+
 <script lang="ts">
 import Vue from "vue";
 /* Import the components so we can use the class-style vue components in TypeScript. */
