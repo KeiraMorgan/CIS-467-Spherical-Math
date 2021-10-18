@@ -35,6 +35,7 @@
           </template>
           <span>{{ $t("main.ObjectsTabToolTip") }}</span>
         </v-tooltip>
+
         <v-tooltip bottom
           :open-delay="toolTipOpenDelay"
           :close-delay="toolTipCloseDelay">
@@ -47,15 +48,29 @@
           <span>{{ $t("main.ConstructionsTabToolTip") }}</span>
         </v-tooltip>
 
+        <v-tooltip bottom
+          :open-delay="toolTipOpenDelay"
+          :close-delay="toolTipCloseDelay">
+          <template v-slot:activator="{ on }">
+            <v-tab class="mt-3"
+              v-on="on">
+              <v-icon left>mdi-eye-settings</v-icon>
+            </v-tab>
+          </template>
+          <span>{{ $t("main.ToolsTabToolTip") }}</span>
+        </v-tooltip>
+
         <v-tab-item>
           <ToolGroups id="toolGroups"></ToolGroups>
         </v-tab-item>
         <v-tab-item>
-          <ObjectTree id="objtree">
-          </ObjectTree>
+          <ObjectTree id="objtree"></ObjectTree>
         </v-tab-item>
         <v-tab-item>
           <ConstructionLoader id="loader"></ConstructionLoader>
+        </v-tab-item>
+        <v-tab-item>
+          <ToolGroupsDisplayOptions id="toolGroupsDisplayOptions"></ToolGroupsDisplayOPtions>
         </v-tab-item>
       </v-tabs>
     </div>
@@ -74,12 +89,13 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import ToolGroups from "@/components/ToolGroups.vue";
+import ToolGroupsDisplayOptions from "@/components/ToolGroupsDisplayOptions.vue"
 import ObjectTree from "@/components/ObjectTree.vue";
 import ConstructionLoader from "@/components/ConstructionLoader.vue";
 import SETTINGS from "@/global-settings";
 import { SEStore } from "@/store";
 
-@Component({ components: { ToolGroups, ObjectTree, ConstructionLoader } })
+@Component({ components: { ToolGroups, ObjectTree, ConstructionLoader, ToolGroupsDisplayOptions } })
 export default class Toolbox extends Vue {
   @Prop()
   readonly minified!: boolean;

@@ -1,9 +1,7 @@
 <template>
   <div class="pa-1 accent"
     id="toolButtonContainer">
-    <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
-    <div id="EditToolGroup"
+  <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
       </h3>
@@ -11,10 +9,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'edit' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'edit'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -32,18 +30,15 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'display' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'display'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
-
-    <!-- The Basic Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
     <div id="BasicToolGroup"
       v-show="nonEmptyGroup('basic')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
@@ -52,17 +47,16 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'basic' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'basic'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
-    <!-- The Construction Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
+   
     <div id="ConstructionToolGroup"
       v-show="nonEmptyGroup('construction')">
       <h3 class="body-1 font-weight-bold">
@@ -72,20 +66,16 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'construction' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'construction'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Measurement Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="MeasurementToolGroup"
       v-show="nonEmptyGroup('measurement')">
       <h3 class="body-1 font-weight-bold">
@@ -94,20 +84,16 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'measurement' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'measurement'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Advanced Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="AdvanceToolGroup"
       v-show="nonEmptyGroup('advanced')">
       <h3 class="body-1 font-weight-bold">
@@ -117,20 +103,16 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'advanced' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'advanced'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Transformational Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="TransformationalToolGroup"
       v-show="nonEmptyGroup('transformational')">
       <h3 class="body-1 font-weight-bold">
@@ -139,20 +121,16 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'transformation' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'transformation'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
 
-    <!-- 
-      The Conice Tool Group only shown if the user has permission to use a tool in this 
-      group. Note the use of the translation $t(key_value).
-    -->
     <div id="ConicToolGroup"
       v-show="nonEmptyGroup('conic')">
       <h3 class="body-1 font-weight-bold">
@@ -161,10 +139,10 @@
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'conic' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'conic'
           )"
-          :key="button.id"
+          :key="pos"
           :button="button"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -180,11 +158,10 @@
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
-        <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) === -1
+        <ToolButton v-for="(button, pos) in buttonList.filter(
+            b => b.toolGroup === 'developerOnly'
           )"
-
-          :key="button.id"
+          :key="pos"
           :button="button"
           :elev="elev"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
@@ -192,9 +169,9 @@
       </v-btn-toggle>
     </div>
 
+
   </div>
 </template>
-
 
 <script lang="ts">
 import Vue from "vue";
@@ -235,13 +212,16 @@ export default class ToolGroups extends Vue {
 
   /* Writes the current state/edit mode to the store, where the Easel view can read it. */
   switchActionMode(): void {
-    SEStore.setActionMode(this.actionMode);
+    if (this.buttinDisplayList.includes(this.actionMode.name)){
+        this.buttinDisplayList.splice(this.buttinDisplayList.indexOf(this.actionMode.name), 1);
+    } else {
+        this.buttinDisplayList.push(this.actionMode.name);
+    }
   }
 
   /* This returns true only if there is at least one tool that needs to be displayed in the group. */
   nonEmptyGroup(groupName: string): boolean {
-    return this.buttonList.filter(b => b.toolGroup === groupName).length
-       - this.buttonList.filter(b => this.buttinDisplayList.includes(b.displayedName) && b.toolGroup === groupName).length > 0;
+    return this.buttonList.filter(b => b.toolGroup === groupName).length > 0;
   }
 
   /* This turns off all other snackbar/toolUseMessage displays so that multiple 

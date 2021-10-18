@@ -821,18 +821,8 @@ export const SETTINGS = {
   },
   /*A list of which buttons to display - adjusted by the users settings.
   This does NOT belong here but I don't know where else to put it at the moment*/
-  userButtonDisplayList: [
-    "rotate",
-    "point",
-    "circle",
-    "move",
-    "line",
-    "segment",
-    "select",
-    "zoomIn",
-    "zoomOut",
-    "intersect"
-  ],
+  userButtonDisplayList: [] as string[],
+  
   supportedLanguages: [
     { locale: "en", name: "English" },
     { locale: "id", name: "Bahasa Indonesia" }
