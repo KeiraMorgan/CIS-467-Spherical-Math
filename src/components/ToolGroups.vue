@@ -2,9 +2,6 @@
   <div class="pa-1 accent"
     id="toolButtonContainer">
     <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
-<<<<<<< Updated upstream
-    Note the use of the translation $t(key_value).-->
-=======
     Note the use of the transltoolGroupation $t(key_value).-->
 
     <div id="editMode">
@@ -16,16 +13,12 @@
 
     </div>
 
->>>>>>> Stashed changes
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="edit"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
@@ -48,10 +41,7 @@
         {{ $t("toolGroups.DisplayTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="display"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
@@ -73,10 +63,7 @@
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="basic"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
@@ -90,6 +77,7 @@
         </ToolButton>
       </v-btn-toggle>
     </div>
+
     <!-- The Construction Tool Group only shown if the user has permission to use a tool in this group.
     Note the use of the translation $t(key_value).-->
     <div id="ConstructionToolGroup"
@@ -99,10 +87,7 @@
       </h3>
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
-<<<<<<< Updated upstream
-=======
         id="construction"
->>>>>>> Stashed changes
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button) in buttonList.filter(
@@ -126,10 +111,7 @@
         {{ $t("toolGroups.MeasurementTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="measurement"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -153,10 +135,7 @@
         {{ $t("toolGroups.AdvancedTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="advanced"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
@@ -181,10 +160,7 @@
         {{ $t("toolGroups.TransformationalTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="transform"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -208,10 +184,7 @@
         {{ $t("toolGroups.ConicTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="conic"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -231,17 +204,13 @@
         {{ $t("toolGroups.DeveloperOnlyTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
-<<<<<<< Updated upstream
-=======
         id="developerOnly"
->>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
         <ToolButton v-for="(button) in buttonList.filter(
             b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) === -1
           )"
-
           :key="button.id"
           :button="button"
           :id="button.actionModeValue"
@@ -264,11 +233,8 @@ import { ActionMode, ToolButtonType } from "@/types";
 import { SEStore } from "@/store";
 /* Import the global settings. */
 import SETTINGS from "@/global-settings";
-<<<<<<< Updated upstream
-=======
 import { Error } from "two.js";
 import vuetify from "@/plugins/vuetify";
->>>>>>> Stashed changes
 
 /* Declare the components used in this component. */
 @Component({
@@ -338,8 +304,6 @@ export default class ToolGroups extends Vue {
   put it. This is the list of tools that should be displayed*/
   private buttonDisplayList = SETTINGS.userButtonDisplayList;
 
-<<<<<<< Updated upstream
-=======
   private inEditMode: boolean = false;
 
   editModeClicked() {
@@ -395,23 +359,18 @@ export default class ToolGroups extends Vue {
     }
   }
 
->>>>>>> Stashed changes
   created(): void {
     this.inProductionMode = process.env.NODE_ENV === "production";
   }
 
   /* Writes the current state/edit mode to the store, where the Easel view can read it. */
   switchActionMode(): void {
-<<<<<<< Updated upstream
-    SEStore.setActionMode(this.actionMode);
-=======
     if (this.inEditMode){
       this.addAndRemoveDisplayedTools()
       document.querySelector('#'+this.actionMode.id)?.classList.add("red");
     } else {
       SEStore.setActionMode(this.actionMode);
     }
->>>>>>> Stashed changes
   }
 
   addAndRemoveDisplayedTools(): void {
@@ -424,8 +383,15 @@ export default class ToolGroups extends Vue {
 
   /* This returns true only if there is at least one tool that needs to be displayed in the group. */
   nonEmptyGroup(groupName: string): boolean {
-    return this.buttonList.filter(b => b.toolGroup === groupName).length
-       - this.buttonList.filter(b => this.buttinDisplayList.includes(b.displayedName) && b.toolGroup === groupName).length > 0;
+    return (
+      this.buttonList.filter(b => b.toolGroup === groupName).length -
+        this.buttonList.filter(
+          b =>
+            this.buttinDisplayList.includes(b.displayedName) &&
+            b.toolGroup === groupName
+        ).length >
+      0
+    );
   }
 
   /* This turns off all other snackbar/toolUseMessage displays so that multiple 
