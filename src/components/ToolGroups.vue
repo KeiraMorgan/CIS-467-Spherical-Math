@@ -1,4 +1,13 @@
 <template>
+<!-- 
+// Try to make things lok better
+
+// add editMode boolean to global settings
+
+// remove snack bar when in edit mode.
+  
+// make the snack bar show up when you hit the url button -->
+
   <div class="pa-1 accent"
     id="toolButtonContainer">
     <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
@@ -286,7 +295,7 @@ export default class ToolGroups extends Vue {
                 for (let j = 0; j < this.buttonList[i].displayedName.length; j++){
                   testString += (('000'+(this.buttonList[i].displayedName.charCodeAt(j))).slice(-3)).toString();
                 }
-                console.log(testString as number);
+                // console.log(testString as number);
             }
         }
         //this.url.searchParams.delete("tools");
@@ -304,11 +313,11 @@ export default class ToolGroups extends Vue {
   put it. This is the list of tools that should be displayed*/
   private buttonDisplayList = SETTINGS.userButtonDisplayList;
 
-  private inEditMode: boolean = false;
+  // private inEditMode: boolean = false;
 
   editModeClicked() {
 
-    if (this.inEditMode) this.enterNormalMode();
+    if (SETTINGS.inEditMode) this.enterNormalMode();
     else {
       this.enterEditMode();
       Vue.nextTick(this.changeRemovedButtonColor, {
@@ -319,7 +328,7 @@ export default class ToolGroups extends Vue {
   //DisplayToolGroupButtonToggle
 
   enterNormalMode(): void {
-    this.inEditMode = false;
+    SETTINGS.inEditMode = false;
     this.buttinDisplayList = SETTINGS.userButtonDisplayList;
 
     let toolEl = document.getElementsByClassName("green");
@@ -338,7 +347,7 @@ export default class ToolGroups extends Vue {
 
     let toolEl = document.getElementsByClassName("accent");
 
-    this.inEditMode = true;
+    SETTINGS.inEditMode = true;
     
     for (var i = 0; i < toolEl.length; i++){
       toolEl[i].classList.replace("accent", "green");
@@ -365,7 +374,7 @@ export default class ToolGroups extends Vue {
 
   /* Writes the current state/edit mode to the store, where the Easel view can read it. */
   switchActionMode(): void {
-    if (this.inEditMode){
+    if (SETTINGS.inEditMode){
       this.addAndRemoveDisplayedTools()
       document.querySelector('#'+this.actionMode.id)?.classList.add("red");
     } else {
