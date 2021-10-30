@@ -2,12 +2,30 @@
   <div class="pa-1 accent"
     id="toolButtonContainer">
     <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
+<<<<<<< Updated upstream
     Note the use of the translation $t(key_value).-->
+=======
+    Note the use of the transltoolGroupation $t(key_value).-->
+
+    <div id="editMode">
+      <v-btn elevation="2"
+        @click="editModeClicked"
+        id = "editButton">Edit Button</v-btn>
+      <v-btn elevation="2"
+        @click="createURL">Create URL</v-btn>        
+
+    </div>
+
+>>>>>>> Stashed changes
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="edit"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
@@ -16,6 +34,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -29,6 +48,10 @@
         {{ $t("toolGroups.DisplayTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="display"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
@@ -37,6 +60,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -49,6 +73,10 @@
       <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="basic"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
@@ -57,6 +85,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -70,6 +99,10 @@
       </h3>
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
+<<<<<<< Updated upstream
+=======
+        id="construction"
+>>>>>>> Stashed changes
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button) in buttonList.filter(
@@ -77,6 +110,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -92,6 +126,10 @@
         {{ $t("toolGroups.MeasurementTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="measurement"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -99,6 +137,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -114,6 +153,10 @@
         {{ $t("toolGroups.AdvancedTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="advanced"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
@@ -122,6 +165,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -137,6 +181,10 @@
         {{ $t("toolGroups.TransformationalTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="transform"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -144,6 +192,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -159,6 +208,10 @@
         {{ $t("toolGroups.ConicTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="conic"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
@@ -166,6 +219,7 @@
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -177,6 +231,10 @@
         {{ $t("toolGroups.DeveloperOnlyTools") }}
       </h3>
       <v-btn-toggle v-model="actionMode"
+<<<<<<< Updated upstream
+=======
+        id="developerOnly"
+>>>>>>> Stashed changes
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
@@ -186,6 +244,7 @@
 
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           :elev="elev"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -205,6 +264,11 @@ import { ActionMode, ToolButtonType } from "@/types";
 import { SEStore } from "@/store";
 /* Import the global settings. */
 import SETTINGS from "@/global-settings";
+<<<<<<< Updated upstream
+=======
+import { Error } from "two.js";
+import vuetify from "@/plugins/vuetify";
+>>>>>>> Stashed changes
 
 /* Declare the components used in this component. */
 @Component({
@@ -212,6 +276,9 @@ import SETTINGS from "@/global-settings";
 })
 export default class ToolGroups extends Vue {
   /* Controls the selection of the actionMode using the buttons. The default is segment. */
+
+
+
   private actionMode: { id: ActionMode; name: string } = {
     id: "rotate",
     name: ""
@@ -225,18 +292,135 @@ export default class ToolGroups extends Vue {
   private elev = 24;
   private inProductionMode = false;
 
+  private url = new URL(window.location.href);
+  private params = new URLSearchParams(location.search);
+  private allButtonDisplayList: string[] = [];
+  private editLabel: string = "Edit Mode";
+  constructor() {
+    super();
+    // for(let i = 0; i < this.buttonList.length; i++){
+    //   this.allButtonDisplayList.push(this.buttonList[i].displayedName);
+    // }
+    //console.log(this.allButtonDisplayList);
+    for(let i = 0; i < this.params.getAll("tools").length; i ++){
+            this.buttinDisplayList.push(this.params.getAll("tools")[i]);
+        }
+  }  
+
+    createURL(): void {
+        //let url = new URL(window.location.href);
+        //url.searchParams.set("tools", "test");
+        this.url.searchParams.delete("tools");
+
+        let testString: string = "";
+
+        for(let i = 0; i < this.buttonList.length; i++){
+            if (this.buttinDisplayList.includes(this.buttonList[i].displayedName)){
+                this.url.searchParams.append("tools", this.buttonList[i].displayedName)
+                for (let j = 0; j < this.buttonList[i].displayedName.length; j++){
+                  testString += (('000'+(this.buttonList[i].displayedName.charCodeAt(j))).slice(-3)).toString();
+                }
+                console.log(testString as number);
+            }
+        }
+        //this.url.searchParams.delete("tools");
+        //this.params.set("q","test");
+        //if(this.params.has("q")){
+        //    this.buttinDisplayList.push('CreatePointDisplayedName')
+        //};
+        //console.log(this.params.getAll("tools"));
+        //alert(this.url);
+        //console.log(this.url.href.toString())
+        //console.log(this.buttinDisplayList);
+    }  
+
   /* This is a variable that does NOT belong in the global settings but I don't know where else to 
   put it. This is the list of tools that should be displayed*/
   private buttonDisplayList = SETTINGS.userButtonDisplayList;
 
+<<<<<<< Updated upstream
+=======
+  private inEditMode: boolean = false;
+
+  editModeClicked() {
+
+    if (this.inEditMode) this.enterNormalMode();
+    else {
+      this.enterEditMode();
+      Vue.nextTick(this.changeRemovedButtonColor, {
+      });
+    } 
+  }
+
+  //DisplayToolGroupButtonToggle
+
+  enterNormalMode(): void {
+    this.inEditMode = false;
+    this.buttinDisplayList = SETTINGS.userButtonDisplayList;
+
+    let toolEl = document.getElementsByClassName("green");
+
+    for (var i = 0; i < toolEl.length; i++){
+      toolEl[i].classList.replace("green", "accent");
+    }
+    if (document.getElementsByClassName("green").length > 0){
+      this.enterNormalMode();
+    }
+  }
+
+  enterEditMode(): void {
+    
+    this.buttinDisplayList = this.allButtonDisplayList;
+
+    let toolEl = document.getElementsByClassName("accent");
+
+    this.inEditMode = true;
+    
+    for (var i = 0; i < toolEl.length; i++){
+      toolEl[i].classList.replace("accent", "green");
+    }
+    if (document.getElementsByClassName("accent").length > 0){
+      this.enterEditMode();
+    }  
+  }
+
+  changeRemovedButtonColor(): void{
+  
+    for (var i = 0; i < this.buttonList.length; i++){
+      if(SETTINGS.userButtonDisplayList.indexOf(this.buttonList[i].displayedName) > -1){
+        document.querySelector('#' + this.buttonList[i].actionModeValue)?.classList.add("red");
+        //console.log(document.querySelector('#' + this.buttonList[i].toolGroup));
+        
+      }
+    }
+  }
+
+>>>>>>> Stashed changes
   created(): void {
     this.inProductionMode = process.env.NODE_ENV === "production";
   }
 
   /* Writes the current state/edit mode to the store, where the Easel view can read it. */
   switchActionMode(): void {
+<<<<<<< Updated upstream
     SEStore.setActionMode(this.actionMode);
+=======
+    if (this.inEditMode){
+      this.addAndRemoveDisplayedTools()
+      document.querySelector('#'+this.actionMode.id)?.classList.add("red");
+    } else {
+      SEStore.setActionMode(this.actionMode);
+    }
+>>>>>>> Stashed changes
   }
+
+  addAndRemoveDisplayedTools(): void {
+    if (SETTINGS.userButtonDisplayList.includes(this.actionMode.name)){
+        SETTINGS.userButtonDisplayList.splice(SETTINGS.userButtonDisplayList.indexOf(this.actionMode.name), 1);
+    } else {
+        SETTINGS.userButtonDisplayList.push(this.actionMode.name);
+    }
+  }  
 
   /* This returns true only if there is at least one tool that needs to be displayed in the group. */
   nonEmptyGroup(groupName: string): boolean {
