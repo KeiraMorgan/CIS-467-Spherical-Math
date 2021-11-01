@@ -358,9 +358,9 @@ export default class ToolGroups extends Vue {
       let allTools = "";
       let toolArray: string[] = [];
 
-      
+           
 
-      if (typeof (this.params.get("tools") !== undefined || null)) {
+      if (typeof (this.params.get("tools")) !== undefined || null) {
         cast = this.params.get("tools") as string;
         for (var i = 0; i < cast.length; i = i + 2) {
           allTools += String.fromCharCode(parseInt(cast[i] + cast[i + 1], 16));
