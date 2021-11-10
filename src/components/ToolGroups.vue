@@ -426,6 +426,7 @@ if(type){
    * Recurrsive because all elements don't update in a single call.
    */
   enterNormalMode(): void {
+    SETTINGS.inEditMode = false;
     this.inEditMode = false;
     this.buttinDisplayList = SETTINGS.userButtonDisplayList;
 
@@ -445,6 +446,7 @@ if(type){
    */
   enterEditMode(): void {
     this.buttinDisplayList = this.allButtonDisplayList;
+    SETTINGS.inEditMode = true;
 
     let toolEl = document.getElementsByClassName("accent");
 

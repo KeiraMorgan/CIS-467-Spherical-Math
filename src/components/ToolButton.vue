@@ -32,7 +32,7 @@
     </v-tooltip>
     <!--- To Check: Does the property multi-line allow the snackbars to be formated correctly
     automatically when the message is many lines long due to font or number of characters? --->
-    <v-snackbar v-if="!inEditMode()" v-model="displayToolUseMessage"
+    <v-snackbar v-if="!inEditMode1()" v-model="displayToolUseMessage"
       bottom
       left
       :timeout="toolUseMessageDelay"
@@ -104,7 +104,8 @@ export default class ToolButton extends Vue {
   @Prop({ default: null })
   button!: ToolButtonType;
 
-  inEditMode(){
+  inEditMode1(){
+    console.log(SETTINGS.inEditMode);
     return SETTINGS.inEditMode;
   }
 
