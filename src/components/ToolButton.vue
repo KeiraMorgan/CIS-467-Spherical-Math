@@ -105,7 +105,7 @@ export default class ToolButton extends Vue {
   button!: ToolButtonType;
 
   inEditMode1(){
-    console.log(SETTINGS.inEditMode);
+    //console.log(SETTINGS.inEditMode);
     return SETTINGS.inEditMode;
   }
 

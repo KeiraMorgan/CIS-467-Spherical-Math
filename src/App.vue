@@ -109,6 +109,7 @@
           class="footer-text">{{ $t(`buttons.NoToolSelected`) }}</span>
       </v-col>
     </v-footer>
+
     <Dialog ref="logoutDialog"
       title="Confirm Logout"
       yes-text="Proceed"
@@ -318,6 +319,7 @@ export default class App extends Vue {
   }
 
   async doShare(): Promise<void> {
+    console.log("do");
     // A local function to convert a blob to base64 representation
     const toBase64 = (inputBlob: Blob): Promise<string> =>
       new Promise((resolve, reject) => {

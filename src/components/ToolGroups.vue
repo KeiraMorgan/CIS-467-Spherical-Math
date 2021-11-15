@@ -17,6 +17,7 @@
         @click="createURL">Create URL</v-btn>
 
     </div>
+    
 
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
@@ -303,6 +304,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import App from "@/App.vue"
 /* Import the components so we can use the class-style vue components in TypeScript. */
 import Component from "vue-class-component";
 import ToolButton from "@/components/ToolButton.vue";
@@ -313,6 +315,12 @@ import SETTINGS from "@/global-settings";
 import { Error } from "two.js";
 import vuetify from "@/plugins/vuetify";
 import SE from "@/store/se-module";
+
+import {
+  FirebaseFirestore,
+  DocumentReference,
+  DocumentSnapshot
+} from "@firebase/firestore-types";
 
 /* Declare the components used in this component. */
 @Component({
@@ -347,6 +355,10 @@ export default class ToolGroups extends Vue {
   private inEditMode = false;
   private colorEditMode = "cyan";
 
+  readonly $appDB!: FirebaseFirestore;
+  private toolListID;
+
+
   /** Retrives the tools parameter from the URL if present and converts it from hex ascii to a string.
    *  The string is split on commas to separate each tool name.
    *  The tool names are added to global-settings.ts userButtonDisplayList[] which is used to modify the user mode view.
@@ -354,28 +366,21 @@ export default class ToolGroups extends Vue {
   constructor() {
     super();
     if (this.params.has("tools")) {
-      let cast = "";
-      let allTools = "";
-      let toolArray: string[] = [];
+      this.toolListID = this.$appDB.doc(this.params.get("tools") as string);
+      this.loadURL(this.toolListID);
 
-// let type = typeof (this.params.get("tools"));
-
-let type = typeof (this.params.get("tools") !== undefined || null);
-
-// if(type !== undefined || null){
-
-if(type){
-      // if (typeof (this.params.get("tools") !== undefined || null)) {
-        cast = this.params.get("tools") as string;
-        for (var i = 0; i < cast.length; i = i + 2) {
-          allTools += String.fromCharCode(parseInt(cast[i] + cast[i + 1], 16));
-        }
-        toolArray = allTools.split(",");
-        for (var j = 0; j < toolArray.length; j++) {
-          SETTINGS.userButtonDisplayList.push(toolArray[j]);
-        }
-      }
+    } else {
+         this.toolListID = this.$appDB.collection("toolList").doc();
     }
+  }
+
+  async loadURL(tools: DocumentReference): Promise<void> {
+      const doc = await tools.get();
+      if(doc.data() !== undefined){
+        SETTINGS.userButtonDisplayList = doc.data().buttinDisplayList as string[];
+        this.editModeClicked();
+        this.editModeClicked();
+     }
   }
 
   /** Clears any existing URL parameters to prevent duplication. Then converts the tools names in
@@ -383,28 +388,9 @@ if(type){
    *  with the tools parameter populated with the tools hex value.
    */
   createURL(): void {
+    this.toolListID.set({'buttinDisplayList' : SETTINGS.userButtonDisplayList});    
     this.url.searchParams.delete("tools");
-
-    let toolName = "";
-
-    for (let i = 0; i < this.buttonList.length; i++) {
-      if (
-        SETTINGS.userButtonDisplayList.includes(
-          this.buttonList[i].displayedName
-        )
-      ) {
-        //this.url.searchParams.append("tools", this.buttonList[i].displayedName)
-        for (let j = 0; j < this.buttonList[i].displayedName.length; j++) {
-          toolName += (
-            "000" + this.buttonList[i].displayedName.charCodeAt(j).toString(16)
-          ).slice(-2);
-          //toolName += (('000'+(this.buttonList[i].displayedName.charCodeAt(j))).slice(-3)).toString();
-        }
-        toolName += "2c";
-      }
-    }
-    this.url.searchParams.append("tools", toolName);
-    console.log(this.url.toString());
+    this.url.searchParams.append("tools", this.toolListID.path);
     navigator.clipboard.writeText(this.url.toString());
   }
 
@@ -428,6 +414,7 @@ if(type){
   enterNormalMode(): void {
     SETTINGS.inEditMode = false;
     this.inEditMode = false;
+    SETTINGS.inEditMode = false;
     this.buttinDisplayList = SETTINGS.userButtonDisplayList;
 
     let toolEl = document.getElementsByClassName(this.colorEditMode);
@@ -445,11 +432,10 @@ if(type){
    * Recurrsive because all elements don't update in a single call.
    */
   enterEditMode(): void {
-    this.buttinDisplayList = this.allButtonDisplayList;
     SETTINGS.inEditMode = true;
+    this.buttinDisplayList = this.allButtonDisplayList;
 
     let toolEl = document.getElementsByClassName("accent");
-
     this.inEditMode = true;
 
     for (var i = 0; i < toolEl.length; i++) {
