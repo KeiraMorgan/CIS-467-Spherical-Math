@@ -434,6 +434,7 @@ export interface ObjectState {
 export type ConstructionScript = Array<string | Array<string>>;
 
 export interface SphericalConstruction extends ConstructionInFirestore {
+  toolList: string[];
   id: string;
   parsedScript: ConstructionScript;
   sphereRotationMatrix: Matrix4;
@@ -442,6 +443,7 @@ export interface SphericalConstruction extends ConstructionInFirestore {
 }
 
 export interface ConstructionInFirestore {
+  toolList: string[];
   author: string;
   dateCreated: string;
   script: string;

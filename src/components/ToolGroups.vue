@@ -1,21 +1,45 @@
 <template>
   <div class="pa-1 accent"
-    id="toolButtonContainer">
+    id="toolButtonContainer"
+    >
     <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
-    Note the use of the translation $t(key_value).-->
+    Note the use of the transltoolGroupation $t(key_value).-->
+
+    <div id="editMode">
+      <v-btn elevation="2"
+        v-if="!inEditMode"
+        @click="editModeClicked"
+        id="editButton">Edit Mode</v-btn>
+      <v-btn elevation="2"
+        v-else
+        @click="editModeClicked"
+        id="editButton">User Mode</v-btn>       
+    </div>
+    
+
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
-      <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">{{ $t("toolGroups.EditTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('edit')">Select All -
+        {{ $t("toolGroups.EditTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="edit"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'edit' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'edit' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -25,18 +49,28 @@
     Note the use of the translation $t(key_value).-->
     <div id="DisplayToolGroup"
       v-show="nonEmptyGroup('display')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.DisplayTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('display')">Select All -
+        {{ $t("toolGroups.DisplayTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="display"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'display' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'display' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -46,37 +80,58 @@
     Note the use of the translation $t(key_value).-->
     <div id="BasicToolGroup"
       v-show="nonEmptyGroup('basic')">
-      <h3 class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">{{ $t("toolGroups.BasicTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('basic')">Select All -
+        {{ $t("toolGroups.BasicTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="basic"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'basic' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'basic' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
     </div>
+
     <!-- The Construction Tool Group only shown if the user has permission to use a tool in this group.
     Note the use of the translation $t(key_value).-->
     <div id="ConstructionToolGroup"
       v-show="nonEmptyGroup('construction')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.ConstructionTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('construction')">Select All
+        - {{ $t("toolGroups.ConstructionTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
         @change="switchActionMode"
+        id="construction"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only basic tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'construction' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'construction' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -88,17 +143,27 @@
     -->
     <div id="MeasurementToolGroup"
       v-show="nonEmptyGroup('measurement')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.MeasurementTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('measurement')">Select All
+        - {{ $t("toolGroups.MeasurementTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="measurement"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'measurement' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'measurement' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -110,18 +175,28 @@
     -->
     <div id="AdvanceToolGroup"
       v-show="nonEmptyGroup('advanced')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.AdvancedTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('advanced')">Select All -
+        {{ $t("toolGroups.AdvancedTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="advanced"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only advanced tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'advanced' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'advanced' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -133,17 +208,27 @@
     -->
     <div id="TransformationalToolGroup"
       v-show="nonEmptyGroup('transformational')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.TransformationalTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('transformational')">Select
+        All - {{ $t("toolGroups.TransformationalTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="transform"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'transformation' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'transformation' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -155,17 +240,27 @@
     -->
     <div id="ConicToolGroup"
       v-show="nonEmptyGroup('conic')">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.ConicTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('conic')">Select All -
+        {{ $t("toolGroups.ConicTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="conic"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'conic' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'conic' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
       </v-btn-toggle>
@@ -173,19 +268,28 @@
 
     <div id="DeveloperToolGroup"
       v-show="nonEmptyGroup('developerOnly') && !inProductionMode">
-      <h3 class="body-1 font-weight-bold">
+      <h3 v-if="!inEditMode"
+        class="body-1 font-weight-bold">
         {{ $t("toolGroups.DeveloperOnlyTools") }}
       </h3>
+      <v-btn v-else
+        class="body-1 font-weight-bold cyan accent-1"
+        depressed
+        x-small
+        @click="groupAddAndRemoveDisplayedTools('developerOnly')">Select
+        All - {{ $t("toolGroups.DeveloperOnlyTools") }}
+      </v-btn>
       <v-btn-toggle v-model="actionMode"
+        id="developerOnly"
         @change="switchActionMode"
         class="mr-2 d-flex flex-wrap accent">
         <!--- Use Array.filter to select only edit tools -->
         <ToolButton v-for="(button) in buttonList.filter(
-            b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) === -1
+            b => b.toolGroup === 'developerOnly' && buttinDisplayList.indexOf(b.displayedName) > -1
           )"
-
           :key="button.id"
           :button="button"
+          :id="button.actionModeValue"
           :elev="elev"
           v-on:displayOnlyThisToolUseMessage="displayOnlyThisToolUseMessageFunc">
         </ToolButton>
@@ -198,6 +302,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import App from "@/App.vue"
 /* Import the components so we can use the class-style vue components in TypeScript. */
 import Component from "vue-class-component";
 import ToolButton from "@/components/ToolButton.vue";
@@ -205,6 +310,15 @@ import { ActionMode, ToolButtonType } from "@/types";
 import { SEStore } from "@/store";
 /* Import the global settings. */
 import SETTINGS from "@/global-settings";
+import { Error } from "two.js";
+import vuetify from "@/plugins/vuetify";
+import SE from "@/store/se-module";
+
+import {
+  FirebaseFirestore,
+  DocumentReference,
+  DocumentSnapshot
+} from "@firebase/firestore-types";
 
 /* Declare the components used in this component. */
 @Component({
@@ -212,6 +326,7 @@ import SETTINGS from "@/global-settings";
 })
 export default class ToolGroups extends Vue {
   /* Controls the selection of the actionMode using the buttons. The default is segment. */
+
   private actionMode: { id: ActionMode; name: string } = {
     id: "rotate",
     name: ""
@@ -220,28 +335,255 @@ export default class ToolGroups extends Vue {
   /* Use the global settings to set the variables bound to the toolTipOpen/CloseDelay */
   private toolTipOpenDelay = SETTINGS.toolTip.openDelay;
   private toolTipCloseDelay = SETTINGS.toolTip.closeDelay;
-  private buttinDisplayList = SETTINGS.userButtonDisplayList;
 
   private elev = 24;
   private inProductionMode = false;
 
-  /* This is a variable that does NOT belong in the global settings but I don't know where else to 
-  put it. This is the list of tools that should be displayed*/
-  private buttonDisplayList = SETTINGS.userButtonDisplayList;
+  /* url gets the current URL to use as a base for the custom view paramater.
+     params is used to add the hex ascii values of the tool names for the custom view.
+     buttinDisplayList is used to show the customized view after editing
+     allButtonDisplayList is used to ensure the edit mode view displays all the tools from buttonList
+     inEditMode switches between edit mode and user mode
+     colorEditMode is the name of the class assigned to the toolBox elements to change the color in edit mode */
+
+  // private url = new URL(window.location.href);
+  // private params = new URLSearchParams(location.search);
+  private buttinDisplayList = SETTINGS.userButtonDisplayList;
+  private allButtonDisplayList: string[] = [];
+  private inEditMode = false;
+  private colorEditMode = "cyan";
+
+  // readonly $appDB!: FirebaseFirestore;
+  // private toolListID;
+
+
+  /** Retrives the tools parameter from the URL if present and converts it from hex ascii to a string.
+   *  The string is split on commas to separate each tool name.
+   *  The tool names are added to global-settings.ts userButtonDisplayList[] which is used to modify the user mode view.
+   */
+  constructor() {
+    super();
+    
+    if(SETTINGS.userButtonDisplayList.length === 0){
+      for(var i = 0; i < this.buttonList.length; i++){
+        SETTINGS.userButtonDisplayList.push(this.buttonList[i].displayedName);
+        this.allButtonDisplayList.push(this.buttonList[i].displayedName);
+      }
+    } else {
+      for(var i = 0; i < this.buttonList.length; i++){
+        this.allButtonDisplayList.push(this.buttonList[i].displayedName);
+      }
+    } 
+
+    // if (this.params.has("tools")) {
+    //   this.toolListID = this.$appDB.doc(this.params.get("tools") as string);
+    //   this.loadURL(this.toolListID);
+
+    // } else {
+    //      this.toolListID = this.$appDB.collection("toolList").doc();
+    //      for(var i = 0; i < this.buttonList.length; i++){
+    //        this.buttinDisplayList.push(this.buttonList[i].displayedName);
+    //      }
+    // }
+  }
+
+  // async loadURL(tools: DocumentReference): Promise<void> {
+  //     const doc = await tools.get();
+  //     if(doc.data() !== undefined){
+  //       SETTINGS.userButtonDisplayList = doc.data().buttinDisplayList as string[];
+  //       this.editModeClicked();
+  //       this.editModeClicked();
+  //    }
+  // }
+
+  /** Clears any existing URL parameters to prevent duplication. Then converts the tools names in
+   *  userButtonDisplayList to hex ascii values with a hex comma separator and generates an URL
+   *  with the tools parameter populated with the tools hex value.
+   */
+  // createURL(): void {
+  //   this.toolListID.set({'buttinDisplayList' : SETTINGS.userButtonDisplayList});    
+  //   this.url.searchParams.delete("tools");
+  //   this.url.searchParams.append("tools", this.toolListID.path);
+  //   navigator.clipboard.writeText(this.url.toString());
+  // }
+
+  /** Switches between edit mode and user mode.
+   * Vue.nextTick is needed to repopulate the buttons that are removed in user mode
+   * but greyed out in edit mode to allow thier color to be changed.
+   */
+  editModeClicked() {
+    if (this.inEditMode) {
+      this.enterNormalMode();
+    } else {
+      this.enterEditMode();
+      Vue.nextTick(this.changeRemovedButtonColor, {});
+    }
+  }
+
+  /**Switches the buttons being displayed from all in edit to the custom view in user mode.
+   * Changes the colors to show which mode is active.
+   * Recurrsive because all elements don't update in a single call.
+   */
+  enterNormalMode(): void {
+    this.inEditMode = false;
+    SETTINGS.inEditMode = false;
+    this.buttinDisplayList = SETTINGS.userButtonDisplayList;
+
+    let toolEl = document.getElementsByClassName(this.colorEditMode);
+
+    for (var i = 0; i < toolEl.length; i++) {
+      toolEl[i].classList.replace(this.colorEditMode, "accent");
+    }
+    if (document.getElementsByClassName(this.colorEditMode).length > 0) {
+      this.enterNormalMode();
+    }
+  }
+
+  /**Switches the Buttons being displayed from the custom user view to all in edit mode.
+   * Changes color to show which mode is active.
+   * Recurrsive because all elements don't update in a single call.
+   */
+  enterEditMode(): void {
+    SETTINGS.inEditMode = true;
+
+    this.buttinDisplayList = this.allButtonDisplayList;
+    
+
+    let toolEl = document.getElementsByClassName("accent");
+    this.inEditMode = true;
+
+    for (var i = 0; i < toolEl.length; i++) {
+      toolEl[i].classList.replace("accent", this.colorEditMode);
+    }
+    if (document.getElementsByClassName("accent").length > 0) {
+      this.enterEditMode();
+    }
+  }
+
+  /**Checks the which buttons are disabled in the user mode and changes thier color to show that.
+   * This is a separeate function from enterEditMode because Vue needs to update to display the removed
+   * buttons before thier colors can be changed.
+   */
+  changeRemovedButtonColor(): void {
+    for (var i = 0; i < this.buttonList.length; i++) {
+      if (
+        SETTINGS.userButtonDisplayList.indexOf(
+          this.buttonList[i].displayedName
+        ) === -1
+      ) {
+        document
+          .querySelector("#" + this.buttonList[i].actionModeValue)
+          ?.classList.add("grey");
+      }
+    }
+  }
 
   created(): void {
     this.inProductionMode = process.env.NODE_ENV === "production";
   }
 
-  /* Writes the current state/edit mode to the store, where the Easel view can read it. */
+  /* Writes the current state/edit mode to the store, where the Easel view can read it. 
+      If the inEditMode flag is set to true, the current state/edit button is removed from user mode view.*/
   switchActionMode(): void {
-    SEStore.setActionMode(this.actionMode);
+    if (this.inEditMode) {
+      this.addAndRemoveDisplayedTools();
+    } else {
+      SEStore.setActionMode(this.actionMode);
+    }
+  }
+
+  /** While in edit mode, adds/removes the name of the clicked toolButton to the global-settings.ts
+   * to customize the user mode view and changes the color of the button to indicate if its added or removed. */
+  addAndRemoveDisplayedTools(): void {
+    if (SETTINGS.userButtonDisplayList.includes(this.actionMode.name)) {
+      SETTINGS.userButtonDisplayList.splice(
+        SETTINGS.userButtonDisplayList.indexOf(this.actionMode.name),
+        1
+      );
+      document
+        .querySelector("#" + this.actionMode.id)
+        ?.classList.add("grey");
+    } else {
+      SETTINGS.userButtonDisplayList.push(this.actionMode.name);
+      document.querySelector("#" + this.actionMode.id)?.classList.remove("grey");
+    }
+
+  }
+
+  /**Removes the entire tool group selected from the user mode display unless all tools are already removed,
+   * then the entire group is added back.
+   */
+  groupAddAndRemoveDisplayedTools(groupName: string) {
+    for (var i = 0; i < this.buttonList.length; i++) {
+      if (
+        this.buttonList[i].toolGroup === groupName &&
+        !SETTINGS.userButtonDisplayList.includes(
+          this.buttonList[i].displayedName
+        )
+      ) {
+        this.removeAllTools(groupName);
+        return;
+      }
+    }
+    this.addAllTools(groupName);
+  }
+
+  /**Checks if every tool name in the given group is in userButtonDisplayList to prevent duplication.
+   * Then adds any that are missing and changes thier color to indicate thier removal from user mode.
+   */
+  removeAllTools(groupName: string): void {
+    for (var i = 0; i < this.buttonList.length; i++) {
+      if (this.buttonList[i].toolGroup === groupName) {
+        if (
+          !SETTINGS.userButtonDisplayList.includes(
+            this.buttonList[i].displayedName
+          )
+        ) {
+          SETTINGS.userButtonDisplayList.push(this.buttonList[i].displayedName);
+          document
+            .querySelector("#" + this.buttonList[i].actionModeValue)
+            ?.classList.remove("grey");
+        }
+      }
+    }
+  }
+
+  /**Checks if a tool name from the group provided is in userButtonDisplayList then removes it.
+   * This allows it to be displayed in user mode again and changes the color to indicate this.
+   */
+  addAllTools(groupName: string): void {
+    for (var i = 0; i < this.buttonList.length; i++) {
+      if (this.buttonList[i].toolGroup === groupName) {
+        if (
+          SETTINGS.userButtonDisplayList.includes(
+            this.buttonList[i].displayedName
+          )
+        ) {
+          SETTINGS.userButtonDisplayList.splice(
+            SETTINGS.userButtonDisplayList.indexOf(
+              this.buttonList[i].displayedName
+            ),
+            1
+          );
+          document
+            .querySelector("#" + this.buttonList[i].actionModeValue)
+            ?.classList.add("grey");
+        }
+      }
+    }
   }
 
   /* This returns true only if there is at least one tool that needs to be displayed in the group. */
   nonEmptyGroup(groupName: string): boolean {
-    return this.buttonList.filter(b => b.toolGroup === groupName).length
-       - this.buttonList.filter(b => this.buttinDisplayList.includes(b.displayedName) && b.toolGroup === groupName).length > 0;
+    return (
+      this.buttonList.filter(b => b.toolGroup === groupName).length -
+        this.buttonList.filter(
+          b =>
+            !this.buttinDisplayList.includes(b.displayedName) &&
+            b.toolGroup === groupName
+        ).length >
+      0
+    );
   }
 
   /* This turns off all other snackbar/toolUseMessage displays so that multiple 

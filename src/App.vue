@@ -76,6 +76,10 @@
           :disabled="!hasObjects"
           class="mr-2"
           @click="$refs.saveConstructionDialog.show()">mdi-share</v-icon>
+        <v-icon v-if="whoami !== '' && hasDoc()"
+          :disabled="!hasObjects"
+          class="mr-2"
+          @click="$refs.overwriteConstructionDialog.show()">mdi-file-document-edit</v-icon>
       </template>
       <router-link to="/settings/">
         <v-icon>mdi-cog</v-icon>
@@ -140,6 +144,25 @@
         :disabled="uid.length === 0"
         label="Available to public"></v-switch>
     </Dialog>
+
+    <Dialog ref="overwriteConstructionDialog"
+      title="Overwrite Construction"
+      yes-text="Save"
+      no-text="Cancel"
+      :yes-action="() => overWrite()"
+      max-width="40%">
+      <p>Change Discription
+      </p>
+
+      <v-text-field type="text"
+        dense
+        clearable
+        counter
+        persistent-hint
+        label="Change Description"
+        required
+        v-model="description"></v-text-field>
+    </Dialog>
   </v-app>
 </template>
 
@@ -168,6 +191,8 @@ import { Command } from "./commands/Command";
 import { Matrix4 } from "three";
 import { SEStore } from "./store";
 import { detect } from "detect-browser";
+import SETTINGS from "./global-settings";
+import { Path } from "two.js";
 
 //#region vuex-module-namespace
 const SE = namespace("se");
@@ -208,6 +233,7 @@ export default class App extends Vue {
   $refs!: {
     logoutDialog: VueComponent & DialogAction;
     saveConstructionDialog: VueComponent & DialogAction;
+    overwriteConstructionDialog: VueComponent & DialogAction;
   };
   footerColor = "accent";
   authSubscription!: Unsubscribe;
@@ -317,6 +343,14 @@ export default class App extends Vue {
     }
   }
 
+  hasDoc(): boolean {
+    if(SETTINGS.firebaseDocPath.length > 0){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   async doShare(): Promise<void> {
     // A local function to convert a blob to base64 representation
     const toBase64 = (inputBlob: Blob): Promise<string> =>
@@ -361,7 +395,8 @@ export default class App extends Vue {
         author: this.whoami,
         description: this.description,
         rotationMatrix: JSON.stringify(rotationMat.elements),
-        preview: svgPreviewData
+        preview: svgPreviewData,
+        toolList: SETTINGS.userButtonDisplayList
       })
       .then((doc: DocumentReference) => {
         EventBus.fire("show-alert", {
@@ -379,9 +414,87 @@ export default class App extends Vue {
           type: "error"
         });
       });
+
+    // this.$appDB.collection(collectionPath).doc(DocumentReference)
     this.$refs.saveConstructionDialog.hide();
   }
+
+  async overWrite(): Promise<void> {
+    // A local function to convert a blob to base64 representation
+    const toBase64 = (inputBlob: Blob): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(inputBlob);
+      });
+
+    /* dump the command history */
+    const out = Command.dumpOpcode();
+
+    const rotationMat = this.inverseTotalRotationMatrix;
+    const collectionPath = this.publicConstruction
+      ? "constructions"
+      : `users/${this.uid}/constructions`;
+
+    // Make a duplicate of the SVG tree
+    const svgElement = this.svgRoot.cloneNode(true) as SVGElement;
+    svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    // Remove the top-level transformation matrix
+    // We have to save the preview in its "natural" pose
+    svgElement.style.removeProperty("transform");
+
+    const svgBlob = new Blob([svgElement.outerHTML], {
+      type: "image/svg+xml;charset=utf-8"
+    });
+    const svgPreviewData = await toBase64(svgBlob);
+
+    // const svgURL = URL.createObjectURL(svgBlob);
+    // FileSaver.saveAs(svgURL, "hans.svg");
+    let path = SETTINGS.firebaseDocPath as unknown as DocumentReference;
+    if(this.description.length === 0){
+      let dis = await this.$appDB.doc(SETTINGS.firebaseDocPath).get();
+      this.description = dis.get("description") as string;
+    }
+    this.$appDB
+      .doc(SETTINGS.firebaseDocPath)
+      .set({
+        script: out,
+        version: "1",
+        dateCreated: new Date().toISOString(),
+        author: this.whoami,
+        description: this.description,
+        rotationMatrix: JSON.stringify(rotationMat.elements),
+        preview: svgPreviewData,
+        toolList: SETTINGS.userButtonDisplayList
+      })
+      .then(() => {
+        EventBus.fire("show-alert", {
+          key: "constructions.firestoreConstructionSaved",
+          keyOptions: { docId: path.id },
+          type: "info"
+        });
+        SEStore.clearUnsavedFlag();
+      })
+      .catch((err: Error) => {
+        console.error("Can't save document", err);
+        EventBus.fire("show-alert", {
+          key: "constructions.firestoreSaveError",
+          keyOptions: {},
+          type: "error"
+        });
+      });
+
+    // this.$appDB.collection(collectionPath).doc(DocumentReference)
+    this.$refs.overwriteConstructionDialog.hide();
+  }
 }
+
+
+
 </script>
 
 <style lang="scss">

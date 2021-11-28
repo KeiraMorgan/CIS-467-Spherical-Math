@@ -357,6 +357,7 @@ export default class Easel extends Vue {
     EventBus.listen("magnification-updated", this.resizePlottables);
     EventBus.listen("undo-enabled", this.setUndoEnabled);
     EventBus.listen("redo-enabled", this.setRedoEnabled);
+    
   }
   //#endregion magnificationUpdate
 
@@ -424,11 +425,47 @@ export default class Easel extends Vue {
       .then((doc: DocumentSnapshot) => {
         if (doc.exists) {
           const { script } = doc.data() as ConstructionInFirestore;
-          run(JSON.parse(script) as ConstructionScript);
+          run(JSON.parse(script) as ConstructionScript); 
+          if(doc.get("toolList") !== undefined){
+            SETTINGS.userButtonDisplayList.clear();
+            for(let i = 0; i < doc.get("toolList").length; i++){
+              SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
+            }
+          } 
         } else {
           EventBus.fire("show-alert", {
             key: "constructions.constructionNotFound",
             keyOptions: { docId: docId },
+            type: "error"
+          });
+        }
+      });
+  }
+
+  loadPrivateDocument(): void {
+    let params = new URLSearchParams(location.search);
+    SEStore.removeAllFromLayers();
+    SEStore.init();
+    SENodule.resetAllCounters();
+    // Nodule.resetIdPlottableDescriptionMap(); // Needed?
+    this.$appDB
+      .doc(params.get("private") as string)
+      .get()
+      .then((doc: DocumentSnapshot) => {
+        if (doc.exists) {
+          const { script } = doc.data() as ConstructionInFirestore;
+          run(JSON.parse(script) as ConstructionScript);
+          if(doc.get("toolList") !== undefined){
+            SETTINGS.userButtonDisplayList.clear();
+            for(let i = 0; i < doc.get("toolList").length; i++){
+              SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
+            }
+          }
+          SETTINGS.firebaseDocPath = params.get("private") as string;          
+        } else {
+          EventBus.fire("show-alert", {
+            key: "constructions.constructionNotFound",
+            keyOptions: { docId: params.get("private") },
             type: "error"
           });
         }
@@ -440,6 +477,9 @@ export default class Easel extends Vue {
     window.addEventListener("resize", this.onWindowResized);
     this.adjustSize(); // Why do we need this?  this.onWindowResized just calls this.adjustSize() but if you remove it the app doesn't work -- strange!
     if (this.documentId) this.loadDocument(this.documentId);
+    if (new URLSearchParams(location.search).has("private")){
+      this.loadPrivateDocument();
+    }
     EventBus.listen(
       "set-action-mode-to-select-tool",
       this.setActionModeToSelectTool

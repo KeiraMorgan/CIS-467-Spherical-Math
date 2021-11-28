@@ -6,7 +6,9 @@
     <!--- WARNING: the "id" attribs below are needed for testing -->
     <ConstructionList id="privateList"
       :items="privateConstructions"
+      :allow-sharing="true"
       v-on:load-requested="shouldLoadConstruction"
+      v-on:share-requested="doSharePrivateConstruction"
       v-on:delete-requested="shouldDeleteConstruction" />
     <div class="text-h6">{{$t(`constructions.publicConstructions`)}}</div>
     <ConstructionList id="publicList"
@@ -82,7 +84,10 @@ import ConstructionList from "@/components/ConstructionList.vue";
 import { Matrix4 } from "three";
 import { namespace } from "vuex-class";
 import { SEStore } from "@/store";
+import SETTINGS from "@/global-settings";
+import ToolGroups from "./ToolGroups.vue";
 const SE = namespace("se");
+
 
 @Component({ components: { Dialog, ConstructionList } })
 export default class ConstructionLoader extends Vue {
@@ -108,6 +113,7 @@ export default class ConstructionLoader extends Vue {
   get firebaseUid(): string {
     return this.$appAuth.currentUser?.uid ?? "";
   }
+
 
   mounted(): void {
     if (this.firebaseUid) {
@@ -161,7 +167,8 @@ export default class ConstructionLoader extends Vue {
           dateCreated: doc.dateCreated,
           description: doc.description,
           sphereRotationMatrix,
-          previewData: doc.preview ?? ""
+          previewData: doc.preview ?? "",
+          toolList: doc.toolList
         });
       }
     });
@@ -190,6 +197,10 @@ export default class ConstructionLoader extends Vue {
     if (pos >= 0) {
       script = this.publicConstructions[pos].parsedScript;
       rotationMatrix = this.publicConstructions[pos].sphereRotationMatrix;
+      SETTINGS.userButtonDisplayList.clear()
+      for(var i = 0; i < this.publicConstructions[pos].toolList.length; i++){
+        SETTINGS.userButtonDisplayList.push(this.publicConstructions[pos].toolList[i]);
+      }
     } else {
       // Search in private list
       pos = this.privateConstructions.findIndex(
@@ -197,7 +208,13 @@ export default class ConstructionLoader extends Vue {
       );
       script = this.privateConstructions[pos].parsedScript;
       rotationMatrix = this.privateConstructions[pos].sphereRotationMatrix;
+      SETTINGS.userButtonDisplayList.clear();
+      for(var i = 0; i < this.privateConstructions[pos].toolList.length; i++){
+        SETTINGS.userButtonDisplayList.push(this.privateConstructions[pos].toolList[i]);
+      }
     }
+
+
 
     SEStore.removeAllFromLayers();
     SEStore.init();
@@ -226,6 +243,13 @@ export default class ConstructionLoader extends Vue {
 
   doShareConstruction(event: { docId: string }): void {
     this.shareURL = `${location.host}/construction/${event.docId}`;
+    this.$refs.constructionShareDialog.show();
+  }
+
+  doSharePrivateConstruction(event: { docId: string }): void {
+    let shareURL = new URL(window.location.origin);
+    shareURL.searchParams.append("private", `users/${this.firebaseUid}/constructions/${event.docId}`);
+    this.shareURL = shareURL.toString();
     this.$refs.constructionShareDialog.show();
   }
 
