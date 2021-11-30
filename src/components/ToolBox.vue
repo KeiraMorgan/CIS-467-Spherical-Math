@@ -1,5 +1,6 @@
 <template>
 
+
   <!-- These the navigation arrows TODO: I would like these to be in the same row as the
     tabs-->
   <!-- This the not minimized left drawer containing two tabs -->
