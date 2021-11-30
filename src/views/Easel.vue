@@ -426,12 +426,16 @@ export default class Easel extends Vue {
         if (doc.exists) {
           const { script } = doc.data() as ConstructionInFirestore;
           run(JSON.parse(script) as ConstructionScript); 
+          // Checks for older constructions that don't have toolLists
+          // then loads toolList into global-settings.ts to be dispayed.
           if(doc.get("toolList") !== undefined){
             SETTINGS.userButtonDisplayList.clear();
             for(let i = 0; i < doc.get("toolList").length; i++){
               SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
             }
-          } 
+          }
+          //Ensures overwrites don't display on public constructions.
+          SETTINGS.firebaseDocPath = ""; 
         } else {
           EventBus.fire("show-alert", {
             key: "constructions.constructionNotFound",
@@ -442,6 +446,11 @@ export default class Easel extends Vue {
       });
   }
 
+  /**
+   * This is needed to load private constuctions as the path in Firebase is different.
+   * The path for private constructions are stored using URL Paramaters in ConstructionLoader.vue and App.vue
+   * SETTINGS.firebaseDocPath is used to overwrite in App.vue
+   */
   loadPrivateDocument(): void {
     let params = new URLSearchParams(location.search);
     SEStore.removeAllFromLayers();
@@ -461,7 +470,7 @@ export default class Easel extends Vue {
               SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
             }
           }
-          SETTINGS.firebaseDocPath = params.get("private") as string;          
+          SETTINGS.firebaseDocPath = params.get("private") as string; 
         } else {
           EventBus.fire("show-alert", {
             key: "constructions.constructionNotFound",

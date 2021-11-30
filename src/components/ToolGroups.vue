@@ -339,26 +339,20 @@ export default class ToolGroups extends Vue {
   private elev = 24;
   private inProductionMode = false;
 
-  /* url gets the current URL to use as a base for the custom view paramater.
-     params is used to add the hex ascii values of the tool names for the custom view.
-     buttinDisplayList is used to show the customized view after editing
+  /* buttinDisplayList is used to show the customized view after editing
      allButtonDisplayList is used to ensure the edit mode view displays all the tools from buttonList
      inEditMode switches between edit mode and user mode
      colorEditMode is the name of the class assigned to the toolBox elements to change the color in edit mode */
 
-  // private url = new URL(window.location.href);
-  // private params = new URLSearchParams(location.search);
   private buttinDisplayList = SETTINGS.userButtonDisplayList;
   private allButtonDisplayList: string[] = [];
   private inEditMode = false;
   private colorEditMode = "cyan";
 
-  // readonly $appDB!: FirebaseFirestore;
-  // private toolListID;
 
 
-  /** Retrives the tools parameter from the URL if present and converts it from hex ascii to a string.
-   *  The string is split on commas to separate each tool name.
+  /** Checks to see if a custom tool list has been loaded already. 
+   *  If it hasn't, loads all tools.
    *  The tool names are added to global-settings.ts userButtonDisplayList[] which is used to modify the user mode view.
    */
   constructor() {
@@ -374,43 +368,8 @@ export default class ToolGroups extends Vue {
         this.allButtonDisplayList.push(this.buttonList[i].displayedName);
       }
     } 
-
-    // if (this.params.has("tools")) {
-    //   this.toolListID = this.$appDB.doc(this.params.get("tools") as string);
-    //   this.loadURL(this.toolListID);
-
-    // } else {
-    //      this.toolListID = this.$appDB.collection("toolList").doc();
-    //      for(var i = 0; i < this.buttonList.length; i++){
-    //        this.buttinDisplayList.push(this.buttonList[i].displayedName);
-    //      }
-    // }
   }
 
-  // async loadURL(tools: DocumentReference): Promise<void> {
-  //     const doc = await tools.get();
-  //     if(doc.data() !== undefined){
-  //       SETTINGS.userButtonDisplayList = doc.data().buttinDisplayList as string[];
-  //       this.editModeClicked();
-  //       this.editModeClicked();
-  //    }
-  // }
-
-  /** Clears any existing URL parameters to prevent duplication. Then converts the tools names in
-   *  userButtonDisplayList to hex ascii values with a hex comma separator and generates an URL
-   *  with the tools parameter populated with the tools hex value.
-   */
-  // createURL(): void {
-  //   this.toolListID.set({'buttinDisplayList' : SETTINGS.userButtonDisplayList});    
-  //   this.url.searchParams.delete("tools");
-  //   this.url.searchParams.append("tools", this.toolListID.path);
-  //   navigator.clipboard.writeText(this.url.toString());
-  // }
-
-  /** Switches between edit mode and user mode.
-   * Vue.nextTick is needed to repopulate the buttons that are removed in user mode
-   * but greyed out in edit mode to allow thier color to be changed.
-   */
   editModeClicked() {
     if (this.inEditMode) {
       this.enterNormalMode();

@@ -190,6 +190,7 @@ export default class ConstructionLoader extends Vue {
     this.$refs.constructionLoadDialog.hide();
     let script: ConstructionScript | null = null;
     let rotationMatrix: Matrix4;
+    let stateObj = { foo: "bar" };
     // Search in public list
     let pos = this.publicConstructions.findIndex(
       (c: SphericalConstruction) => c.id === this.selectedDocId
@@ -197,10 +198,18 @@ export default class ConstructionLoader extends Vue {
     if (pos >= 0) {
       script = this.publicConstructions[pos].parsedScript;
       rotationMatrix = this.publicConstructions[pos].sphereRotationMatrix;
-      SETTINGS.userButtonDisplayList.clear()
-      for(var i = 0; i < this.publicConstructions[pos].toolList.length; i++){
-        SETTINGS.userButtonDisplayList.push(this.publicConstructions[pos].toolList[i]);
+      //Checks that the firebase doc has toolList to ensure older docs still load
+      //then adds the tool list to global-settings.ts to be displayed in ToolGroup.vue
+      if(this.publicConstructions[pos].toolList !== undefined){
+        SETTINGS.userButtonDisplayList.clear()
+        for(var i = 0; i < this.publicConstructions[pos].toolList.length; i++){
+          SETTINGS.userButtonDisplayList.push(this.publicConstructions[pos].toolList[i]);
+        }
       }
+      //Updates the address bar to display the share link for the current construction.
+      history.replaceState({foo: "bar"}, "", "/construction/" + this.publicConstructions[pos].id);
+      //Ensures overwrites don't display on public constructions.
+      SETTINGS.firebaseDocPath = "";
     } else {
       // Search in private list
       pos = this.privateConstructions.findIndex(
@@ -208,10 +217,21 @@ export default class ConstructionLoader extends Vue {
       );
       script = this.privateConstructions[pos].parsedScript;
       rotationMatrix = this.privateConstructions[pos].sphereRotationMatrix;
-      SETTINGS.userButtonDisplayList.clear();
-      for(var i = 0; i < this.privateConstructions[pos].toolList.length; i++){
-        SETTINGS.userButtonDisplayList.push(this.privateConstructions[pos].toolList[i]);
+      //Checks that the firebase doc has toolList to ensure older docs still load
+      //then adds the tool list to global-settings.ts to be displayed in ToolGroup.vue      
+      if(this.privateConstructions[pos].toolList !== undefined){
+        SETTINGS.userButtonDisplayList.clear();
+        for(var i = 0; i < this.privateConstructions[pos].toolList.length; i++){
+          SETTINGS.userButtonDisplayList.push(this.privateConstructions[pos].toolList[i]);
+        }
       }
+      //Updates the address bar to display the share link for the current construction.
+      //Private constructions paths are stored using url parameters
+      //Private constructions can be overwritten so SETTING.firebaseDocPath must be so for App.vue
+      let replaceURL = new URL(window.location.origin);
+      replaceURL.searchParams.set("private", "users/" + this.firebaseUid + "/constructions/" + this.privateConstructions[pos].id);
+      history.replaceState(stateObj, "", replaceURL.toString());
+      SETTINGS.firebaseDocPath = replaceURL.searchParams.get("private") as string;
     }
 
 

@@ -343,8 +343,14 @@ export default class App extends Vue {
     }
   }
 
+  /**
+   * Checks if a private doc has been loaded 
+   * (SETTINGS.firebaseDocPath is only set when a private doc is loaded)
+   * and if the firebase doc uid matches the current uid.
+   */
   hasDoc(): boolean {
-    if(SETTINGS.firebaseDocPath.length > 0){
+    let docUID = SETTINGS.firebaseDocPath.split("/")[1];
+    if((SETTINGS.firebaseDocPath.length > 0) && docUID === this.uid){
       return true;
     } else {
       return false;
@@ -386,6 +392,9 @@ export default class App extends Vue {
 
     // const svgURL = URL.createObjectURL(svgBlob);
     // FileSaver.saveAs(svgURL, "hans.svg");
+    let url = new URLSearchParams;
+    let removeS = "";
+    let stateObj = { foo: "bar" };
     this.$appDB
       .collection(collectionPath)
       .add({
@@ -399,6 +408,21 @@ export default class App extends Vue {
         toolList: SETTINGS.userButtonDisplayList
       })
       .then((doc: DocumentReference) => {
+        /**
+         * Checks if the firebase path starts at c(onstructions)
+         * or u(sers) to ensure correct url encoding.
+         * SETTINGS.firebaseDocPath is set to allow overwrites on private docs
+         * however the secret key needs to be entered again for the option to diplay
+         */
+        if(collectionPath.toString()[0] === "c"){
+          removeS = collectionPath.toString();
+          removeS = removeS.slice(0, 12) + removeS.slice(13); 
+          history.replaceState(stateObj, "", "/" + removeS + "/" + doc.id);
+        } else if (collectionPath.toString()[0] === "u"){
+          url.set("private", collectionPath.toString() + "/" + doc.id);
+          history.replaceState(stateObj, "", "?" + url.toString());
+          SETTINGS.firebaseDocPath = url.get("private") as string;
+        }
         EventBus.fire("show-alert", {
           key: "constructions.firestoreConstructionSaved",
           keyOptions: { docId: doc.id },
@@ -414,11 +438,16 @@ export default class App extends Vue {
           type: "error"
         });
       });
-
     // this.$appDB.collection(collectionPath).doc(DocumentReference)
     this.$refs.saveConstructionDialog.hide();
   }
 
+  /**
+   * Duplicates the functionality of doShare but overwrites the firebase Doc
+   * a construction was loaded from instead of creating a new doc.
+   * Should only be callable if the construction is private and
+   * the current uid matches the construction uid.
+   */
   async overWrite(): Promise<void> {
     // A local function to convert a blob to base64 representation
     const toBase64 = (inputBlob: Blob): Promise<string> =>
@@ -455,10 +484,14 @@ export default class App extends Vue {
     // const svgURL = URL.createObjectURL(svgBlob);
     // FileSaver.saveAs(svgURL, "hans.svg");
     let path = SETTINGS.firebaseDocPath as unknown as DocumentReference;
+    //Reapplies the discription from the last save if no new discription is provided.
     if(this.description.length === 0){
       let dis = await this.$appDB.doc(SETTINGS.firebaseDocPath).get();
       this.description = dis.get("description") as string;
     }
+    //SETTINGS.firebaseDocPath is set from Easal.vue when a private construction is 
+    //loaded from a URL or ConstructionLoader.vue when a private construction is 
+    //loaded from the GUI.
     this.$appDB
       .doc(SETTINGS.firebaseDocPath)
       .set({

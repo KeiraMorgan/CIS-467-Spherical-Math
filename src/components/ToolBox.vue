@@ -48,18 +48,6 @@
           <span>{{ $t("main.ConstructionsTabToolTip") }}</span>
         </v-tooltip>
 
-        <v-tooltip bottom
-          :open-delay="toolTipOpenDelay"
-          :close-delay="toolTipCloseDelay">
-          <template v-slot:activator="{ on }">
-            <v-tab class="mt-3"
-              v-on="on">
-              <v-icon left>mdi-eye-settings</v-icon>
-            </v-tab>
-          </template>
-          <span>{{ $t("main.ToolsTabToolTip") }}</span>
-        </v-tooltip>
-
         <v-tab-item>
           <ToolGroups id="toolGroups"></ToolGroups>
         </v-tab-item>
@@ -68,9 +56,6 @@
         </v-tab-item>
         <v-tab-item>
           <ConstructionLoader id="loader"></ConstructionLoader>
-        </v-tab-item>
-        <v-tab-item>
-          <ToolGroupsDisplayOptions id="toolGroupsDisplayOptions"></ToolGroupsDisplayOPtions>
         </v-tab-item>
       </v-tabs>
     </div>
@@ -95,7 +80,7 @@ import ConstructionLoader from "@/components/ConstructionLoader.vue";
 import SETTINGS from "@/global-settings";
 import { SEStore } from "@/store";
 
-@Component({ components: { ToolGroups, ObjectTree, ConstructionLoader, ToolGroupsDisplayOptions } })
+@Component({ components: { ToolGroups, ObjectTree, ConstructionLoader} })
 export default class Toolbox extends Vue {
   @Prop()
   readonly minified!: boolean;
@@ -110,11 +95,13 @@ export default class Toolbox extends Vue {
   private activeLeftDrawerTab = 0;
   // private scene!: Two.Group;
 
+
   mounted(): void {
     // this.scene = this.layers[LAYER.midground];
   }
 
   switchTab(): void {
+    
     // console.log("this.activeLeftDrawerTab", this.activeLeftDrawerTab);
     if (this.activeLeftDrawerTab === 1) {
       // 1 is the index of the object tree tab
