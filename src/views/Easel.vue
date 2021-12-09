@@ -429,13 +429,14 @@ export default class Easel extends Vue {
           // Checks for older constructions that don't have toolLists
           // then loads toolList into global-settings.ts to be dispayed.
           if(doc.get("toolList") !== undefined){
-            SETTINGS.userButtonDisplayList.clear();
+            SEStore.userButtonDisplayList.clear();
             for(let i = 0; i < doc.get("toolList").length; i++){
-              SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
+              SEStore.userButtonDisplayList.push(doc.get("toolList")[i]);
             }
           }
           //Ensures overwrites don't display on public constructions.
-          SETTINGS.firebaseDocPath = ""; 
+          SEStore.setfirebaseDocPath("");
+          //SEStore.firebaseDocPath = ""; 
         } else {
           EventBus.fire("show-alert", {
             key: "constructions.constructionNotFound",
@@ -465,12 +466,13 @@ export default class Easel extends Vue {
           const { script } = doc.data() as ConstructionInFirestore;
           run(JSON.parse(script) as ConstructionScript);
           if(doc.get("toolList") !== undefined){
-            SETTINGS.userButtonDisplayList.clear();
+            SEStore.userButtonDisplayList.clear();
             for(let i = 0; i < doc.get("toolList").length; i++){
-              SETTINGS.userButtonDisplayList.push(doc.get("toolList")[i]);
+              SEStore.userButtonDisplayList.push(doc.get("toolList")[i]);
             }
           }
-          SETTINGS.firebaseDocPath = params.get("private") as string; 
+          SEStore.setfirebaseDocPath(params.get("private") as string);
+          //SEStore.firebaseDocPath = params.get("private") as string; 
         } else {
           EventBus.fire("show-alert", {
             key: "constructions.constructionNotFound",

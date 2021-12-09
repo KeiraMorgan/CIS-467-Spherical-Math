@@ -118,6 +118,10 @@ export default class SE extends VuexModule implements AppState {
   hasUnsavedNodules = false;
   temporaryProfilePicture = "";
 
+  userButtonDisplayList: string[] = [];
+  firebaseDocPath = "";
+  inEditMode = false;
+
   //#endregion appState
 
   @Mutation
@@ -147,6 +151,21 @@ export default class SE extends VuexModule implements AppState {
     //this.temporaryNodules.clear(); // Do not clear the temporaryNodules array
     // because the constructors of the tools (handlers) place the temporary Nodules
     // in this array *before* the this.init is called in App.vue mount.
+  }
+
+  @Mutation
+  setButtonList(buttonList: string[]): void {
+    this.userButtonDisplayList = buttonList;
+  }
+
+  @Mutation
+  setfirebaseDocPath(path: string):void {
+    this.firebaseDocPath = path;
+  }
+
+  @Mutation
+  setInEditMode(edit: boolean): void {
+    this.inEditMode = edit;
   }
 
   @Mutation

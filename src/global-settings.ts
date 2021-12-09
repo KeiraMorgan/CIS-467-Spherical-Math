@@ -2,7 +2,7 @@ import { ValueDisplayMode, LabelDisplayMode } from "./types";
 
 export const SETTINGS = {
 
-  inEditMode:false,
+  //inEditMode:false,
   nearlyAntipodalIdeal: 0.005, // Two unit vectors, U and V, are nearly antipodal or nearly parallel (the) if crossVectors(U,V).isZero(nearlyAntipodalIdeal) is true
   tolerance: 0.00000000001, // Any number less that this tolerance is considered zero
   hideObjectHidesLabel: true, // hiding an object hide the label of that object automatically if this is true
@@ -821,14 +821,7 @@ export const SETTINGS = {
     maxNumberOfIterationArcLength: 5, // maximum number of times it will iterate over the curve to find the arcLength (i.e. the curve is divided into at most subdivisions*maxNumberOfIterationArcLength subdivisions while looking for the arcLength)
     maxChangeInArcLength: 0.0001 // If the change in arcLength is less than this, return the value
   },
-  /*A list of which buttons to display - adjusted by the users settings.
-  This does NOT belong here but I don't know where else to put it at the moment*/
-  userButtonDisplayList: [] as string[],
-
-  firebaseDocPath: "",
-
-  constructionDiscription: "",
-  
+ 
   supportedLanguages: [
     { locale: "en", name: "English" },
     { locale: "id", name: "Bahasa Indonesia" }

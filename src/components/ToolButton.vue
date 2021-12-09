@@ -33,6 +33,7 @@
     <!--- To Check: Does the property multi-line allow the snackbars to be formated correctly
     automatically when the message is many lines long due to font or number of characters? --->
     <v-snackbar v-model="displayToolUseMessage"
+      v-if="!inEditMode()"
       bottom
       left
       :timeout="toolUseMessageDelay"
@@ -73,6 +74,7 @@ import { State } from "vuex-class";
 import { AppState, ToolButtonType } from "@/types";
 import SETTINGS from "@/global-settings";
 import { namespace } from "vuex-class";
+import { SEStore } from "@/store";
 
 const SE = namespace("se");
 
@@ -94,10 +96,6 @@ export default class ToolButton extends Vue {
   id button.id), this is variable is being watched in this child and turns off the display of the
   snackbar/toolUseMessage  */
   private displayToolUseMessage = false;
-
-  /* This is a variable that does NOT belong in the global settings but I don't know where else to 
-  put it. This is the list of tools that should be displayed*/
-  private buttonDisplayList = SETTINGS.userButtonDisplayList;
 
   /* Allow us to bind the button object in the parent (=ToolGroups) with the button object in the
   child */
@@ -122,6 +120,10 @@ export default class ToolButton extends Vue {
       this.elev = 0;
       this.weight = "normal";
     }
+  }
+
+  inEditMode(){
+    return SEStore.inEditMode;
   }
   // @Prop({ default: 0 }) readonly elev?: number;
   /* @Watch if button.displayToolUseMessage changes then set displayToolUseMessage to false so

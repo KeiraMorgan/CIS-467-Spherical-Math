@@ -1,21 +1,10 @@
 <template>
   <div class="pa-1 accent"
     id="toolButtonContainer"
+
     >
     <!-- The Edit Tool Group only shown if the user has permission to use a tool in this group.
     Note the use of the transltoolGroupation $t(key_value).-->
-
-    <div id="editMode">
-      <v-btn elevation="2"
-        v-if="!inEditMode"
-        @click="editModeClicked"
-        id="editButton">Edit Mode</v-btn>
-      <v-btn elevation="2"
-        v-else
-        @click="editModeClicked"
-        id="editButton">User Mode</v-btn>       
-    </div>
-    
 
     <div id="EditToolGroup"
       v-show="nonEmptyGroup('edit')">
@@ -295,6 +284,9 @@
         </ToolButton>
       </v-btn-toggle>
     </div>
+    <App
+      v-on:edit="editModeClicked">
+    </App>
 
   </div>
 </template>
@@ -322,7 +314,7 @@ import {
 
 /* Declare the components used in this component. */
 @Component({
-  components: { ToolButton }
+  components: { ToolButton, App }
 })
 export default class ToolGroups extends Vue {
   /* Controls the selection of the actionMode using the buttons. The default is segment. */
@@ -344,7 +336,7 @@ export default class ToolGroups extends Vue {
      inEditMode switches between edit mode and user mode
      colorEditMode is the name of the class assigned to the toolBox elements to change the color in edit mode */
 
-  private buttinDisplayList = SETTINGS.userButtonDisplayList;
+  private buttinDisplayList = SEStore.userButtonDisplayList;
   private allButtonDisplayList: string[] = [];
   private inEditMode = false;
   private colorEditMode = "cyan";
@@ -358,17 +350,18 @@ export default class ToolGroups extends Vue {
   constructor() {
     super();
     
-    if(SETTINGS.userButtonDisplayList.length === 0){
+    if(SEStore.userButtonDisplayList.length === 0){
       for(var i = 0; i < this.buttonList.length; i++){
-        SETTINGS.userButtonDisplayList.push(this.buttonList[i].displayedName);
+        SEStore.userButtonDisplayList.push(this.buttonList[i].displayedName);
         this.allButtonDisplayList.push(this.buttonList[i].displayedName);
       }
     } else {
-      for(var i = 0; i < this.buttonList.length; i++){
-        this.allButtonDisplayList.push(this.buttonList[i].displayedName);
+      for(var j = 0; j < this.buttonList.length; j++){
+        this.allButtonDisplayList.push(this.buttonList[j].displayedName);
       }
     } 
   }
+
 
   editModeClicked() {
     if (this.inEditMode) {
@@ -385,8 +378,8 @@ export default class ToolGroups extends Vue {
    */
   enterNormalMode(): void {
     this.inEditMode = false;
-    SETTINGS.inEditMode = false;
-    this.buttinDisplayList = SETTINGS.userButtonDisplayList;
+    SEStore.setInEditMode(false);
+    this.buttinDisplayList = SEStore.userButtonDisplayList;
 
     let toolEl = document.getElementsByClassName(this.colorEditMode);
 
@@ -403,7 +396,7 @@ export default class ToolGroups extends Vue {
    * Recurrsive because all elements don't update in a single call.
    */
   enterEditMode(): void {
-    SETTINGS.inEditMode = true;
+    SEStore.setInEditMode(true);
 
     this.buttinDisplayList = this.allButtonDisplayList;
     
@@ -426,7 +419,7 @@ export default class ToolGroups extends Vue {
   changeRemovedButtonColor(): void {
     for (var i = 0; i < this.buttonList.length; i++) {
       if (
-        SETTINGS.userButtonDisplayList.indexOf(
+        SEStore.userButtonDisplayList.indexOf(
           this.buttonList[i].displayedName
         ) === -1
       ) {
@@ -454,16 +447,16 @@ export default class ToolGroups extends Vue {
   /** While in edit mode, adds/removes the name of the clicked toolButton to the global-settings.ts
    * to customize the user mode view and changes the color of the button to indicate if its added or removed. */
   addAndRemoveDisplayedTools(): void {
-    if (SETTINGS.userButtonDisplayList.includes(this.actionMode.name)) {
-      SETTINGS.userButtonDisplayList.splice(
-        SETTINGS.userButtonDisplayList.indexOf(this.actionMode.name),
+    if (SEStore.userButtonDisplayList.includes(this.actionMode.name)) {
+      SEStore.userButtonDisplayList.splice(
+        SEStore.userButtonDisplayList.indexOf(this.actionMode.name),
         1
       );
       document
         .querySelector("#" + this.actionMode.id)
         ?.classList.add("grey");
     } else {
-      SETTINGS.userButtonDisplayList.push(this.actionMode.name);
+      SEStore.userButtonDisplayList.push(this.actionMode.name);
       document.querySelector("#" + this.actionMode.id)?.classList.remove("grey");
     }
 
@@ -476,7 +469,7 @@ export default class ToolGroups extends Vue {
     for (var i = 0; i < this.buttonList.length; i++) {
       if (
         this.buttonList[i].toolGroup === groupName &&
-        !SETTINGS.userButtonDisplayList.includes(
+        !SEStore.userButtonDisplayList.includes(
           this.buttonList[i].displayedName
         )
       ) {
@@ -494,11 +487,11 @@ export default class ToolGroups extends Vue {
     for (var i = 0; i < this.buttonList.length; i++) {
       if (this.buttonList[i].toolGroup === groupName) {
         if (
-          !SETTINGS.userButtonDisplayList.includes(
+          !SEStore.userButtonDisplayList.includes(
             this.buttonList[i].displayedName
           )
         ) {
-          SETTINGS.userButtonDisplayList.push(this.buttonList[i].displayedName);
+          SEStore.userButtonDisplayList.push(this.buttonList[i].displayedName);
           document
             .querySelector("#" + this.buttonList[i].actionModeValue)
             ?.classList.remove("grey");
@@ -514,12 +507,12 @@ export default class ToolGroups extends Vue {
     for (var i = 0; i < this.buttonList.length; i++) {
       if (this.buttonList[i].toolGroup === groupName) {
         if (
-          SETTINGS.userButtonDisplayList.includes(
+          SEStore.userButtonDisplayList.includes(
             this.buttonList[i].displayedName
           )
         ) {
-          SETTINGS.userButtonDisplayList.splice(
-            SETTINGS.userButtonDisplayList.indexOf(
+          SEStore.userButtonDisplayList.splice(
+            SEStore.userButtonDisplayList.indexOf(
               this.buttonList[i].displayedName
             ),
             1

@@ -201,15 +201,16 @@ export default class ConstructionLoader extends Vue {
       //Checks that the firebase doc has toolList to ensure older docs still load
       //then adds the tool list to global-settings.ts to be displayed in ToolGroup.vue
       if(this.publicConstructions[pos].toolList !== undefined){
-        SETTINGS.userButtonDisplayList.clear()
+        SEStore.userButtonDisplayList.clear()
         for(var i = 0; i < this.publicConstructions[pos].toolList.length; i++){
-          SETTINGS.userButtonDisplayList.push(this.publicConstructions[pos].toolList[i]);
+          SEStore.userButtonDisplayList.push(this.publicConstructions[pos].toolList[i]);
         }
       }
       //Updates the address bar to display the share link for the current construction.
       history.replaceState({foo: "bar"}, "", "/construction/" + this.publicConstructions[pos].id);
       //Ensures overwrites don't display on public constructions.
-      SETTINGS.firebaseDocPath = "";
+      SEStore.setfirebaseDocPath("");
+      //SEStore.firebaseDocPath = "";
     } else {
       // Search in private list
       pos = this.privateConstructions.findIndex(
@@ -220,9 +221,9 @@ export default class ConstructionLoader extends Vue {
       //Checks that the firebase doc has toolList to ensure older docs still load
       //then adds the tool list to global-settings.ts to be displayed in ToolGroup.vue      
       if(this.privateConstructions[pos].toolList !== undefined){
-        SETTINGS.userButtonDisplayList.clear();
-        for(var i = 0; i < this.privateConstructions[pos].toolList.length; i++){
-          SETTINGS.userButtonDisplayList.push(this.privateConstructions[pos].toolList[i]);
+        SEStore.userButtonDisplayList.clear();
+        for(var j = 0; j < this.privateConstructions[pos].toolList.length; j++){
+          SEStore.userButtonDisplayList.push(this.privateConstructions[pos].toolList[j]);
         }
       }
       //Updates the address bar to display the share link for the current construction.
@@ -231,7 +232,8 @@ export default class ConstructionLoader extends Vue {
       let replaceURL = new URL(window.location.origin);
       replaceURL.searchParams.set("private", "users/" + this.firebaseUid + "/constructions/" + this.privateConstructions[pos].id);
       history.replaceState(stateObj, "", replaceURL.toString());
-      SETTINGS.firebaseDocPath = replaceURL.searchParams.get("private") as string;
+      SEStore.setfirebaseDocPath(replaceURL.searchParams.get("private") as string);
+      //SEStore.firebaseDocPath = replaceURL.searchParams.get("private") as string;
     }
 
 

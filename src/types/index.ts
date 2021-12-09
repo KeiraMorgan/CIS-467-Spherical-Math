@@ -25,6 +25,7 @@ export interface Selectable {
 }
 
 export interface AppState {
+  userButtonDisplayList: string[];
   layers: Two.Group[];
   sphereRadius: /* in pixel */ number; // When the window is resized, the actual size of the sphere (in pixel may change)
   zoomTranslation: number[]; // current zoom translation vector

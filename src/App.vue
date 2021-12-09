@@ -80,6 +80,11 @@
           :disabled="!hasObjects"
           class="mr-2"
           @click="$refs.overwriteConstructionDialog.show()">mdi-file-document-edit</v-icon>
+        <v-icon
+          class="mr-2"
+          @click="$emit('edit', $event.target.value)"
+          >mdi-tools
+        </v-icon>
       </template>
       <router-link to="/settings/">
         <v-icon>mdi-cog</v-icon>
@@ -218,6 +223,9 @@ export default class App extends Vue {
   @SE.State((s: AppState) => s.inverseTotalRotationMatrix)
   readonly inverseTotalRotationMatrix!: Matrix4;
 
+  @SE.State((s: AppState) => s.userButtonDisplayList)
+  readonly userButtonDisplayList!: string[];
+
   // @SE.State((s: AppState) => s.sePoints)
   // readonly sePoints!: SEPoint[];
 
@@ -274,6 +282,10 @@ export default class App extends Vue {
       this.acceptedKeys = 0;
     }
   };
+
+  print() {
+    console.log("emit");
+  }
 
   created(): void {
     window.addEventListener("keydown", this.keyHandler);
@@ -349,8 +361,8 @@ export default class App extends Vue {
    * and if the firebase doc uid matches the current uid.
    */
   hasDoc(): boolean {
-    let docUID = SETTINGS.firebaseDocPath.split("/")[1];
-    if((SETTINGS.firebaseDocPath.length > 0) && docUID === this.uid){
+    let docUID = SEStore.firebaseDocPath.split("/")[1];
+    if((SEStore.firebaseDocPath.length > 0) && docUID === this.uid){
       return true;
     } else {
       return false;
@@ -405,7 +417,7 @@ export default class App extends Vue {
         description: this.description,
         rotationMatrix: JSON.stringify(rotationMat.elements),
         preview: svgPreviewData,
-        toolList: SETTINGS.userButtonDisplayList
+        toolList: this.userButtonDisplayList
       })
       .then((doc: DocumentReference) => {
         /**
@@ -421,7 +433,8 @@ export default class App extends Vue {
         } else if (collectionPath.toString()[0] === "u"){
           url.set("private", collectionPath.toString() + "/" + doc.id);
           history.replaceState(stateObj, "", "?" + url.toString());
-          SETTINGS.firebaseDocPath = url.get("private") as string;
+          SEStore.setfirebaseDocPath(url.get("private") as string);
+          //SEStore.firebaseDocPath = url.get("private") as string;
         }
         EventBus.fire("show-alert", {
           key: "constructions.firestoreConstructionSaved",
@@ -483,17 +496,17 @@ export default class App extends Vue {
 
     // const svgURL = URL.createObjectURL(svgBlob);
     // FileSaver.saveAs(svgURL, "hans.svg");
-    let path = SETTINGS.firebaseDocPath as unknown as DocumentReference;
+    let path = SEStore.firebaseDocPath as unknown as DocumentReference;
     //Reapplies the discription from the last save if no new discription is provided.
     if(this.description.length === 0){
-      let dis = await this.$appDB.doc(SETTINGS.firebaseDocPath).get();
+      let dis = await this.$appDB.doc(SEStore.firebaseDocPath).get();
       this.description = dis.get("description") as string;
     }
     //SETTINGS.firebaseDocPath is set from Easal.vue when a private construction is 
     //loaded from a URL or ConstructionLoader.vue when a private construction is 
     //loaded from the GUI.
     this.$appDB
-      .doc(SETTINGS.firebaseDocPath)
+      .doc(SEStore.firebaseDocPath)
       .set({
         script: out,
         version: "1",
@@ -502,7 +515,7 @@ export default class App extends Vue {
         description: this.description,
         rotationMatrix: JSON.stringify(rotationMat.elements),
         preview: svgPreviewData,
-        toolList: SETTINGS.userButtonDisplayList
+        toolList: this.userButtonDisplayList
       })
       .then(() => {
         EventBus.fire("show-alert", {
